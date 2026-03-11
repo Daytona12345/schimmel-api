@@ -1,15 +1,16 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+
 from rechner import schimmel_analyse_kern
 from textbausteine import get_textbaustein
 
 app = FastAPI()
 
-# CORS aktivieren (erlaubt Zugriff von deiner Website)
+# CORS für Website-Zugriff erlauben
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # später besser: ["https://deinedomain.de"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,9 +21,11 @@ app.add_middleware(
 def root():
     return {"message": "Schimmel API läuft"}
 
+
 class Punkt(BaseModel):
     name: str
     temp: float
+
 
 class AnalyseInput(BaseModel):
     mode: str | None = None
@@ -31,39 +34,51 @@ class AnalyseInput(BaseModel):
     t_wand: float | None = None
     punkte: list[Punkt] | None = None
 
+
 @app.post("/calculate")
 def calculate(data: AnalyseInput):
 
-    # Fall 1: klassische Einzelmessung
+    # Einzelmessung
     if data.t_wand is not None:
-        result = schimmel_analyse_kern(
+
+        r = schimmel_analyse_kern(
             data.t_raum,
             data.rF_raum,
             data.t_wand
         )
-        return result
 
-    # Fall 2: Mehrpunktmessung (UI 4.1)
+        text = get_textbaustein(r["scenario_id"])
+
+        return {
+            "taupunkt":         r["taupunkt"],
+            "taupunkt_abstand": r["taupunkt_abstand"],
+            "surfRH":           r["surfRH"],
+            "delta_t":          r["delta_t"],
+            "scenario_id":      r["scenario_id"],
+            "text":             text
+        }
+
+    # Mehrpunktmessung
     if data.punkte:
 
         results = []
 
-       for p in data.punkte:
-    r = schimmel_analyse_kern(
-        data.t_raum,
-        data.rF_raum,
-        p.temp
-    )
+        for p in data.punkte:
 
-    text = get_textbaustein(r["scenario_id"])
+            r = schimmel_analyse_kern(
+                data.t_raum,
+                data.rF_raum,
+                p.temp
+            )
 
-    results.append({
-        "punkt": p.name,
-        "temp": p.temp,
-        "analyse": r,
-        "text": text
-    })
-    
+            text = get_textbaustein(r["scenario_id"])
+
+            results.append({
+                "punkt":   p.name,
+                "temp":    p.temp,
+                "analyse": r,
+                "text":    text
+            })
 
         return {
             "punkte": results
