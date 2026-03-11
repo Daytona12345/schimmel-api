@@ -48,21 +48,21 @@ def calculate(data: AnalyseInput):
 
         results = []
 
-        for p in data.punkte:
-            r = schimmel_analyse_kern(
-                data.t_raum,
-                data.rF_raum,
-                p.temp
-            )
+       for p in data.punkte:
+    r = schimmel_analyse_kern(
+        data.t_raum,
+        data.rF_raum,
+        p.temp
+    )
 
-         text = get_textbaustein(r["scenario_id"])
+    text = get_textbaustein(r["scenario_id"])
 
-results.append({
-    "punkt": p.name,
-    "temp": p.temp,
-    "analyse": r,
-    "text": text
-})
+    results.append({
+        "punkt": p.name,
+        "temp": p.temp,
+        "analyse": r,
+        "text": text
+    })
     
 
         return {
