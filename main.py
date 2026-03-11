@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 from rechner import schimmel_analyse_kern
-from textbausteine import get_textbaustein
+from textbausteine import get_textbausteine
 
 app = FastAPI()
 
