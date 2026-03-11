@@ -1,4 +1,5 @@
 import math
+from textbausteine import textbausteine
 
 def schimmel_analyse_kern(t_raum, rF_raum, t_wand):
 
