@@ -63,7 +63,7 @@ results.append({
     "analyse": r,
     "text": text
 })
-            })
+    
 
         return {
             "punkte": results
