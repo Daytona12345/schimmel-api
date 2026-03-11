@@ -19,6 +19,9 @@ app.add_middleware(
 def root():
     return {"message": "Schimmel API läuft"}
 
+class Punkt(BaseModel):
+    name: str
+    temp: float
 
 class AnalyseInput(BaseModel):
     t_raum: float
