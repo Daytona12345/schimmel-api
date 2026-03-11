@@ -42,6 +42,8 @@ def schimmel_analyse_kern(t_raum, rF_raum, t_wand):
     else:
         scenario_id = "Fall C (Alles OK)"
 
+    text = textbausteine.get(scenario_id, "")
+
     return {
         "taupunkt": round(t_taupunkt, 2),
         "taupunkt_abstand": round(taupunkt_abstand, 2),
