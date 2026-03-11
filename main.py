@@ -24,9 +24,11 @@ class Punkt(BaseModel):
     temp: float
 
 class AnalyseInput(BaseModel):
+    mode: str | None = None
     t_raum: float
     rF_raum: float
-    t_wand: float
+    t_wand: float | None = None
+    punkte: list[Punkt] | None = None
 
 
 @app.post("/calculate")
