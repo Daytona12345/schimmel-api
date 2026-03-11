@@ -55,10 +55,14 @@ def calculate(data: AnalyseInput):
                 p.temp
             )
 
-            results.append({
-                "punkt": p.name,
-                "temp": p.temp,
-                "analyse": r
+         text = get_textbaustein(r["scenario_id"])
+
+results.append({
+    "punkt": p.name,
+    "temp": p.temp,
+    "analyse": r,
+    "text": text
+})
             })
 
         return {
