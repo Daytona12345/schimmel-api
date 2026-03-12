@@ -7,7 +7,6 @@ from textbausteine import get_textbausteine
 
 app = FastAPI()
 
-# CORS für Website-Zugriff erlauben
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -46,15 +45,16 @@ def calculate(data: AnalyseInput):
             data.t_wand
         )
 
-        text = get_textbausteine(r["scenario_id"])
-
         return {
             "taupunkt":         r["taupunkt"],
             "taupunkt_abstand": r["taupunkt_abstand"],
             "surfRH":           r["surfRH"],
             "delta_t":          r["delta_t"],
             "scenario_id":      r["scenario_id"],
-            "text":             text
+            "ursache":          r["ursache"],
+            "befund1":          r["befund1"],
+            "befund2":          r["befund2"],
+            "befund3":          r["befund3"],
         }
 
     # Mehrpunktmessung
@@ -70,13 +70,10 @@ def calculate(data: AnalyseInput):
                 p.temp
             )
 
-            text = get_textbausteine(r["scenario_id"])
-
             results.append({
                 "punkt":   p.name,
                 "temp":    p.temp,
                 "analyse": r,
-                "text":    text
             })
 
         return {
