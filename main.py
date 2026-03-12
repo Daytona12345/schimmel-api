@@ -46,7 +46,7 @@ def calculate(data: AnalyseInput):
             data.t_wand
         )
 
-        text = get_textbaustein(r["scenario_id"])
+        text = get_textbausteine(r["scenario_id"])
 
         return {
             "taupunkt":         r["taupunkt"],
@@ -70,7 +70,7 @@ def calculate(data: AnalyseInput):
                 p.temp
             )
 
-            text = get_textbaustein(r["scenario_id"])
+            text = get_textbausteine(r["scenario_id"])
 
             results.append({
                 "punkt":   p.name,
