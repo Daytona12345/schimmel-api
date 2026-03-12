@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schimmelrisiko-Rechner V7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ================================================
+   GLOBAL STYLE BLOCK
+   ================================================ */
+:root {
+  --font-display: 'Inter', Arial, sans-serif;
+  --font-body:    'Inter', Arial, sans-serif;
+
+  --bg-top:    #1a4a8a;
+  --bg-bottom: #0d1f3c;
+  --bg:        linear-gradient(170deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+
+  --card-bg:     #ffffff;
+  --card-radius: 10px;
+  --card-shadow: 0 8px 32px rgba(0,0,0,0.22);
+
+  --text-primary:   #111111;
+  --text-secondary: #333333;
+  --text-muted:     #666666;
+  --text-on-dark:   #ffffff;
+  --text-on-dark-2: rgba(255,255,255,0.65);
+
+  --input-bg:           #f5f6f8;
+  --input-border:       #cccccc;
+  --input-border-focus: #1a4a8a;
+  --input-font-size:    26px;
+  --label-font-size:    14px;
+
+  --btn-primary-bg:    #1a4a8a;
+  --btn-primary-color: #ffffff;
+  --btn-back-bg:       #f0f4fb;
+  --btn-back-color:    #1a4a8a;
+
+  /* Ampel 9 Stufen */
+  --rot-stark:    #FF2800;
+  --rot-mittel:   #FF6B6B;
+  --rot-sanft:    #FFADAD;
+  --gelb-stark:   #FFD300;
+  --gelb-mittel:  #FFE066;
+  --gelb-sanft:   #FFE896;
+  --gruen-sanft:  #A8E6C8;
+  --gruen-mittel: #48C78E;
+  --gruen-stark:  #00A859;
+
+  --gap:    24px;
+  --radius: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 32px 16px 64px;
+  overflow-x: hidden;
+}
+
+.app { max-width: 980px; margin: 0 auto; }
+
+/* HEADER */
+.header { text-align: center; margin-bottom: 24px; }
+.header-eyebrow { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.88); margin-top: 8px; }
+.header-title { font-family: var(--font-display); font-size: 38px; font-weight: 800; color: var(--text-on-dark); letter-spacing: -0.5px; }
+
+/* CARD */
+.card { background: var(--card-bg); border-radius: var(--card-radius); box-shadow: var(--card-shadow); overflow: hidden; }
+
+/* TOP BAR */
+.top-bar {
+  background: #f0f4fb;
+  border-bottom: 2px solid #dde4f0;
+  padding: 24px 28px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 640px) { .top-bar { grid-template-columns: 1fr; gap: 20px; } }
+
+.anleitung-title { font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-bottom: 12px; }
+.anleitung-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.anleitung-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; font-weight: 500; color: var(--text-secondary); line-height: 1.4; }
+.step-nr { font-family: var(--font-display); font-size: 15px; font-weight: 800; color: #1a4a8a; min-width: 22px; flex-shrink: 0; }
+
+.rd-field { display: flex; flex-direction: column; gap: 6px; }
+.rd-label { font-size: var(--label-font-size); font-weight: 700; color: var(--text-secondary); letter-spacing: 0.3px; }
+.rd-input { font-family: var(--font-body); font-size: 28px; font-weight: 700; color: var(--text-primary); background: #fff; border: 2px solid var(--input-border); border-radius: var(--radius); padding: 10px 14px; width: 110px; outline: none; appearance: textfield; }
+.rd-input:focus { border-color: var(--input-border-focus); }
+.rd-unit { font-size: 15px; font-weight: 700; color: #111; }
+
+.neue-messung-btn { display: none; font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: #fff; color: #1a4a8a; border: 2px solid #1a4a8a; border-radius: var(--radius); padding: 10px 18px; cursor: pointer; align-self: end; white-space: nowrap; }
+.neue-messung-btn.visible { display: block; }
+.neue-messung-btn:hover { background: #f0f4fb; }
+
+/* TABS */
+.tab-nav { display: flex; border-bottom: 2px solid #e0e0e0; overflow-x: auto; background: #fff; gap: 0; scrollbar-width: none; }
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn { font-family: var(--font-display); font-size: 15px; font-weight: 700; padding: 16px 22px; background: transparent; border: none; border-bottom: 3px solid transparent; color: #444; cursor: pointer; white-space: nowrap; position: relative; bottom: -2px; letter-spacing: 0; }
+.tab-btn:hover { color: #111; background: #f8f9fc; }
+.tab-btn.active { color: #1a4a8a; border-bottom-color: #1a4a8a; background: #fff; }
+
+/* PANEL */
+.panel { display: none; }
+.panel.active { display: block; }
+.panel-input  { display: grid; }
+.panel-result { display: none; }
+.panel-result.visible { display: block; }
+.panel-input.hidden   { display: none; }
+
+/* PANEL BODY */
+.panel-body { display: grid; grid-template-columns: 1fr 1fr; min-height: 440px; }
+@media (max-width: 640px) { .panel-body { grid-template-columns: 1fr; } .panel-img { display: none; } }
+
+.panel-img { background: #e8edf5; border-right: 2px solid #dde4f0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 28px; gap: 16px; }
+.img-placeholder { width: 100%; max-width: 280px; aspect-ratio: 4/3; background: #d0d8ea; border-radius: var(--radius); border: 2px dashed #b0bcd0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #7a8aaa; }
+.img-placeholder svg { width: 52px; height: 52px; opacity: 0.5; }
+.img-placeholder-label { font-family: var(--font-display); font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #556; }
+.img-caption { font-size: 15px; font-weight: 600; color: #333; text-align: center; line-height: 1.5; max-width: 260px; }
+
+.panel-form { padding: 32px 28px; display: flex; flex-direction: column; gap: 22px; }
+.form-title { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+.form-desc { font-size: 15px; font-weight: 500; color: var(--text-secondary); line-height: 1.5; }
+
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field-label { font-size: var(--label-font-size); font-weight: 700; color: var(--text-secondary); }
+.field input[type=number] { font-family: var(--font-body); font-size: var(--input-font-size); font-weight: 700; color: var(--text-primary); background: var(--input-bg); border: 2px solid var(--input-border); border-radius: var(--radius); padding: 12px 16px; width: 100%; outline: none; appearance: textfield; }
+.field input[type=number]:focus { border-color: var(--input-border-focus); background: #fff; }
+.field input[type=number]::placeholder { color: #bbb; }
+.field-group { display: flex; flex-direction: column; gap: 14px; }
+
+/* Matrix */
+.matrix-table { border-collapse: collapse; width: 100%; }
+.matrix-table th { font-size: 13px; font-weight: 700; color: var(--text-secondary); padding: 8px 6px 12px; border-bottom: 2px solid var(--text-primary); text-align: center; letter-spacing: 0.3px; }
+.matrix-table th.left { text-align: left; }
+.matrix-table th.sep  { border-left: 2px solid #ccc; }
+.matrix-table td      { padding: 5px 3px; border-bottom: 1px solid #f0f0f0; text-align: center; }
+.matrix-table td.row-label { text-align: left; font-size: 14px; font-weight: 700; color: var(--text-secondary); padding-right: 10px; white-space: nowrap; }
+.matrix-table td.sep { border-left: 2px solid #eee; }
+.matrix-table input { font-family: var(--font-body); font-size: 16px; font-weight: 700; color: var(--text-primary); background: var(--input-bg); border: 2px solid var(--input-border); border-radius: 4px; padding: 7px 4px; width: 62px; text-align: center; outline: none; appearance: textfield; }
+.matrix-table input:focus { border-color: var(--input-border-focus); background: #fff; }
+
+/* Fenster */
+.fenster-grid { display: grid; grid-template-columns: 60px 1fr 60px; grid-template-rows: auto 1fr auto; gap: 8px; max-width: 300px; }
+.f-top    { grid-column:2; grid-row:1; display:flex; gap:6px; justify-content:center; }
+.f-left   { grid-column:1; grid-row:2; display:flex; flex-direction:column; gap:6px; justify-content:center; }
+.f-right  { grid-column:3; grid-row:2; display:flex; flex-direction:column; gap:6px; justify-content:center; }
+.f-bottom { grid-column:2; grid-row:3; display:flex; gap:6px; justify-content:center; }
+.f-box    { grid-column:2; grid-row:2; background:#e8edf5; border:2px solid #b0bcd0; border-radius:4px; min-height:90px; display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#7a8aaa; }
+.f-inp { display:flex; flex-direction:column; align-items:center; gap:3px; }
+.f-inp-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.f-inp input { font-family: var(--font-body); font-size: 15px; font-weight: 700; color: var(--text-primary); background: var(--input-bg); border: 2px solid var(--input-border); border-radius: 4px; padding: 6px 4px; width: 54px; text-align: center; outline: none; appearance: textfield; }
+.f-inp input:focus { border-color: var(--input-border-focus); background: #fff; }
+
+/* Fläche */
+.flaeche-grid-wrap { overflow-x: auto; }
+.flaeche-grid { display: grid; grid-template-columns: 24px repeat(5, 1fr); gap: 5px; min-width: 280px; }
+.flaeche-col-label, .flaeche-row-label { font-size: 13px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; justify-content: center; padding: 3px; }
+.flaeche-grid input { font-family: var(--font-body); font-size: 15px; font-weight: 700; color: var(--text-primary); background: var(--input-bg); border: 2px solid var(--input-border); border-radius: 4px; padding: 8px 3px; width: 100%; text-align: center; outline: none; appearance: textfield; }
+.flaeche-grid input:focus { border-color: var(--input-border-focus); background: #fff; }
+
+/* BERECHNEN BUTTON */
+.btn-calc { font-family: var(--font-display); font-size: 15px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; background: var(--btn-primary-bg); color: var(--btn-primary-color); border: none; border-radius: var(--radius); padding: 16px 40px; cursor: pointer; margin-top: auto; align-self: flex-start; }
+.btn-calc:hover { background: #0f3070; }
+.btn-calc:disabled { background: #999; cursor: not-allowed; }
+
+/* Loading Spinner */
+.loading-hint { font-size: 14px; font-weight: 600; color: #1a4a8a; padding: 12px 0; display: none; }
+.loading-hint.visible { display: block; }
+
+/* RESULT VIEW */
+.result-view { padding: 32px 28px; }
+.result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #e8e8e8; flex-wrap: wrap; gap: 12px; }
+.result-title { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--text-primary); }
+.result-actions { display: flex; gap: 10px; }
+.btn-back { font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: var(--btn-back-bg); color: var(--btn-back-color); border: 2px solid #1a4a8a; border-radius: var(--radius); padding: 10px 22px; cursor: pointer; }
+.btn-back:hover { background: #e0e8f8; }
+.btn-print { font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: #1a4a8a; color: #fff; border: 2px solid #1a4a8a; border-radius: var(--radius); padding: 10px 22px; cursor: pointer; }
+.btn-print:hover { background: #0f3070; }
+
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+@media (max-width: 560px) { .result-grid { grid-template-columns: 1fr; } }
+
+.result-box { border: 2px solid #e8e8e8; border-radius: var(--radius); padding: 20px; }
+.result-box-label { font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-bottom: 14px; }
+
+.ampel-block { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.ampel-chip-big { width: 62px; height: 62px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-size: 18px; font-weight: 700; color: #111; flex-shrink: 0; }
+.ampel-info .val { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.ampel-info .sub { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-top: 3px; }
+
+.stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-top: 1px solid #f0f0f0; font-size: 14px; }
+.stat-row .stat-label { color: var(--text-secondary); font-weight: 500; }
+.stat-row .stat-val   { font-weight: 700; color: var(--text-primary); font-size: 15px; }
+.stat-row .stat-val.danger  { color: var(--rot-stark); }
+.stat-row .stat-val.warning { color: #b07000; }
+
+.risk-box { border-radius: var(--radius); padding: 20px; border: 2px solid #e8e8e8; }
+.risk-level { font-family: var(--font-display); font-size: 26px; font-weight: 800; margin-bottom: 16px; }
+.risk-bar-bg { height: 10px; background: #f0f0f0; border-radius: 5px; overflow: hidden; margin-bottom: 8px; }
+.risk-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--gruen-stark), var(--gelb-stark), var(--rot-mittel), var(--rot-stark)); }
+.risk-bar-labels { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: #333; }
+
+/* colored matrix in result */
+.result-matrix { overflow-x: auto; margin-bottom: 20px; }
+.result-matrix table { border-collapse: collapse; width: 100%; min-width: 380px; }
+.result-matrix th { font-size: 13px; font-weight: 700; color: var(--text-secondary); padding: 7px 6px 11px; border-bottom: 2px solid #111; text-align: center; }
+.result-matrix th.left { text-align: left; }
+.result-matrix td { padding: 8px 6px; border-bottom: 1px solid #f0f0f0; text-align: center; font-weight: 700; font-size: 15px; color: #111; }
+.result-matrix td.row-label { text-align: left; font-size: 14px; color: #333; font-weight: 700; }
+
+/* Ausreißer-Hinweis */
+.outlier-note { padding: 14px 18px; background: #fff8e0; border-left: 4px solid var(--gelb-stark); border-radius: 0 var(--radius) var(--radius) 0; font-size: 14px; font-weight: 500; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+
+/* API Error */
+.api-error { padding: 14px 18px; background: #fff0f0; border-left: 4px solid var(--rot-stark); border-radius: 0 var(--radius) var(--radius) 0; font-size: 14px; font-weight: 600; color: #c00; margin-bottom: 16px; }
+
+/* FOOTER */
+.footer { padding: 16px 28px; border-top: 1px solid #e8e8e8; font-size: 13px; font-weight: 500; color: var(--text-muted); line-height: 1.7; }
+
+
+/* BEFUND SECTION */
+.befund-section {
+  margin-top: 16px;
+  border: 2px solid #e8e8e8;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.befund-header {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #444;
+  background: #f0f4fb;
+  padding: 12px 20px;
+  border-bottom: 2px solid #dde4f0;
+}
+.befund-ursache {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  padding: 16px 20px;
+  background: #f8faff;
+  border-bottom: 1px solid #e8e8e8;
+  line-height: 1.6;
+}
+.befund-block {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.befund-block:last-child { border-bottom: none; }
+.befund-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 6px;
+}
+.befund-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #2a2a2a;
+  line-height: 1.6;
+}
+
+/* PRINT */
+@media print {
+  body { background: #fff !important; padding: 0; }
+  .tab-nav, .result-actions, .anleitung, .neue-messung-btn { display: none !important; }
+  .card { box-shadow: none; border-radius: 0; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <h1 class="header-title">Thermo-Check</h1>
+    <div class="header-eyebrow">Schimmelrisiko bestimmen – Wärmebrücken und schlechte Dämmung ermitteln</div>
+  </header>
+
+  <div class="card">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="anleitung">
+        <div class="anleitung-title">So geht's</div>
+        <ol class="anleitung-list">
+          <li><span class="step-nr">1</span>Raumtemperatur und Luftfeuchtigkeit eingeben.</li>
+          <li><span class="step-nr">2</span>Gewünschten Check aus den Tabs auswählen.</li>
+          <li><span class="step-nr">3</span>Punkte entsprechend der Abbildung messen.</li>
+          <li><span class="step-nr">4</span>Auf „Berechnen" drücken – Ergebnis erscheint.</li>
+        </ol>
+      </div>
+      <div style="display:flex;gap:20px;align-items:end;flex-wrap:wrap">
+        <div class="rd-field">
+          <label class="rd-label">Raumtemperatur</label>
+          <input class="rd-input" type="number" id="tRoom" step="0.1" value="22">
+          <span class="rd-unit">°C</span>
+        </div>
+        <div class="rd-field">
+          <label class="rd-label">Luftfeuchtigkeit</label>
+          <input class="rd-input" type="number" id="rH" step="1" value="55">
+          <span class="rd-unit">% rF</span>
+        </div>
+        <button class="neue-messung-btn" id="globalNeuBtn" onclick="globalNeueMessung()">↺ Neue Messung</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('p-ecke',   this)">Punktcheck Ecke</button>
+      <button class="tab-btn"        onclick="switchTab('p-flaeche',this)">Punktcheck Fläche</button>
+      <button class="tab-btn"        onclick="switchTab('raumecke', this)">Raumecke</button>
+      <button class="tab-btn"        onclick="switchTab('fenster',  this)">Fenstercheck</button>
+      <button class="tab-btn"        onclick="switchTab('flaeche',  this)">Flächencheck</button>
+    </nav>
+
+    <!-- TAB 1: PUNKTCHECK ECKE -->
+    <div id="panel-p-ecke" class="panel active">
+      <div class="panel-input" id="in-p-ecke">
+        <div class="panel-body">
+          <div class="panel-img">
+            <div class="img-placeholder">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="60" height="60" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
+                <line x1="10" y1="10" x2="40" y2="40" stroke="#8899bb" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <circle cx="22" cy="22" r="5" fill="#8899bb"/>
+                <circle cx="40" cy="40" r="5" fill="#8899bb"/>
+                <circle cx="58" cy="58" r="5" fill="#8899bb"/>
+                <text x="29" y="26" font-size="10" fill="#8899bb" font-weight="bold">1</text>
+                <text x="47" y="44" font-size="10" fill="#8899bb" font-weight="bold">2</text>
+                <text x="62" y="56" font-size="10" fill="#8899bb" font-weight="bold">3</text>
+              </svg>
+              <div class="img-placeholder-label">Ecke · 3 Messpunkte</div>
+            </div>
+            <div class="img-caption">Einen Punkt je Fläche der Ecke messen</div>
+          </div>
+          <div class="panel-form">
+            <div>
+              <div class="form-title">Punktcheck Ecke</div>
+              <div class="form-desc">Messen Sie jeweils einen Punkt der drei Flächen dieser Ecke.</div>
+            </div>
+            <div class="field-group">
+              <div class="field"><label class="field-label">Messpunkt 1 – oben (°C)</label><input type="number" id="pe-1" step="0.1" placeholder="z.B. 15,2"></div>
+              <div class="field"><label class="field-label">Messpunkt 2 – Mitte (°C)</label><input type="number" id="pe-2" step="0.1" placeholder="z.B. 14,8"></div>
+              <div class="field"><label class="field-label">Messpunkt 3 – unten (°C)</label><input type="number" id="pe-3" step="0.1" placeholder="z.B. 15,5"></div>
+            </div>
+            <div class="loading-hint" id="load-p-ecke">⏳ Analyse läuft…</div>
+            <button class="btn-calc" id="btn-p-ecke" onclick="calcPunktEcke()">Berechnen</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-result" id="res-p-ecke">
+        <div class="result-view">
+          <div class="result-header">
+            <div class="result-title">Auswertung – Punktcheck Ecke</div>
+            <div class="result-actions">
+              <button class="btn-back"  onclick="backToInput('p-ecke')">← Zurück</button>
+              <button class="btn-print" onclick="window.print()">Drucken / PDF</button>
+            </div>
+          </div>
+          <div id="res-p-ecke-content"></div>
+        </div>
+        <div class="footer">Taupunktberechnung nach Magnus-Formel · Schimmelgrenze ca. 80 % rel. Oberflächenfeuchte · Bewertung ersetzt keine sachverständige Begutachtung.</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PUNKTCHECK FLÄCHE -->
+    <div id="panel-p-flaeche" class="panel">
+      <div class="panel-input" id="in-p-flaeche">
+        <div class="panel-body">
+          <div class="panel-img">
+            <div class="img-placeholder">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="60" height="60" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
+                <circle cx="24" cy="24" r="5" fill="#8899bb"/>
+                <circle cx="56" cy="38" r="5" fill="#8899bb"/>
+                <circle cx="30" cy="58" r="5" fill="#8899bb"/>
+                <text x="31" y="28" font-size="10" fill="#8899bb" font-weight="bold">1</text>
+                <text x="63" y="42" font-size="10" fill="#8899bb" font-weight="bold">2</text>
+                <text x="37" y="62" font-size="10" fill="#8899bb" font-weight="bold">3</text>
+              </svg>
+              <div class="img-placeholder-label">Fläche · 3 Messpunkte</div>
+            </div>
+            <div class="img-caption">Drei zusammenliegende Punkte im Messbereich</div>
+          </div>
+          <div class="panel-form">
+            <div>
+              <div class="form-title">Punktcheck Fläche</div>
+              <div class="form-desc">Messen Sie drei zusammenliegende Punkte, welche innerhalb des gedachten Bereichs liegen.</div>
+            </div>
+            <div class="field-group">
+              <div class="field"><label class="field-label">Messpunkt 1 (°C)</label><input type="number" id="pf-1" step="0.1" placeholder="—"></div>
+              <div class="field"><label class="field-label">Messpunkt 2 (°C)</label><input type="number" id="pf-2" step="0.1" placeholder="—"></div>
+              <div class="field"><label class="field-label">Messpunkt 3 (°C)</label><input type="number" id="pf-3" step="0.1" placeholder="—"></div>
+            </div>
+            <div class="loading-hint" id="load-p-flaeche">⏳ Analyse läuft…</div>
+            <button class="btn-calc" id="btn-p-flaeche" onclick="calcPunktFlaeche()">Berechnen</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-result" id="res-p-flaeche">
+        <div class="result-view">
+          <div class="result-header">
+            <div class="result-title">Auswertung – Punktcheck Fläche</div>
+            <div class="result-actions">
+              <button class="btn-back"  onclick="backToInput('p-flaeche')">← Zurück</button>
+              <button class="btn-print" onclick="window.print()">Drucken / PDF</button>
+            </div>
+          </div>
+          <div id="res-p-flaeche-content"></div>
+        </div>
+        <div class="footer">Taupunktberechnung nach Magnus-Formel · Bewertung ersetzt keine sachverständige Begutachtung.</div>
+      </div>
+    </div>
+
+    <!-- TAB 3: RAUMECKE -->
+    <div id="panel-raumecke" class="panel">
+      <div class="panel-input" id="in-raumecke">
+        <div class="panel-body">
+          <div class="panel-img">
+            <div class="img-placeholder">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="8" width="64" height="64" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
+                <line x1="8"  y1="26" x2="72" y2="26" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
+                <line x1="8"  y1="44" x2="72" y2="44" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
+                <line x1="8"  y1="62" x2="72" y2="62" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
+                <line x1="26" y1="8"  x2="26" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
+                <line x1="44" y1="8"  x2="44" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
+                <line x1="62" y1="8"  x2="62" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
+              </svg>
+              <div class="img-placeholder-label">Raumecke · 4×4 Matrix</div>
+            </div>
+            <div class="img-caption">Ecke, Wand und Decke – drei Punkte je Fläche als Referenz</div>
+          </div>
+          <div class="panel-form">
+            <div>
+              <div class="form-title">Raumecke</div>
+              <div class="form-desc">Messen Sie: (1) Jeweils drei Punkte der Wand dicht an der Ecke. (2) Jeweils einen Punkt der Decke oberhalb der Wandpunkte. (3) Jeweils drei Punkte in der Mitte beider Wände als Referenz.</div>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="matrix-table" id="raumecke-table">
+                <thead>
+                  <tr>
+                    <th class="left"></th>
+                    <th>Wand 1</th>
+                    <th class="sep">Ecke A</th>
+                    <th>Ecke I</th>
+                    <th class="sep">Wand 2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="row-label">Decke</td>    <td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td></tr>
+                  <tr><td class="row-label">Wand oben</td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td></tr>
+                  <tr><td class="row-label">Wand Mitte</td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td></tr>
+                  <tr><td class="row-label">Wand unten</td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td><td><input type="number" step="0.1" placeholder="—"></td><td class="sep"><input type="number" step="0.1" placeholder="—"></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="loading-hint" id="load-raumecke">⏳ Analyse läuft…</div>
+            <button class="btn-calc" id="btn-raumecke" onclick="calcRaumecke()">Berechnen</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-result" id="res-raumecke">
+        <div class="result-view">
+          <div class="result-header">
+            <div class="result-title">Auswertung – Raumecke</div>
+            <div class="result-actions">
+              <button class="btn-back"  onclick="backToInput('raumecke')">← Zurück</button>
+              <button class="btn-print" onclick="window.print()">Drucken / PDF</button>
+            </div>
+          </div>
+          <div id="res-raumecke-content"></div>
+        </div>
+        <div class="footer">Taupunktberechnung nach Magnus-Formel · Bewertung ersetzt keine sachverständige Begutachtung.</div>
+      </div>
+    </div>
+
+    <!-- TAB 4: FENSTERCHECK -->
+    <div id="panel-fenster" class="panel">
+      <div class="panel-input" id="in-fenster">
+        <div class="panel-body">
+          <div class="panel-img">
+            <div class="img-placeholder">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="22" y="8"  width="36" height="56" rx="2" stroke="#8899bb" stroke-width="2" fill="none"/>
+                <rect x="26" y="12" width="28" height="48" rx="1" stroke="#b0bcd0" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+                <circle cx="40" cy="36" r="4" fill="#8899bb"/>
+                <circle cx="8"  cy="24" r="3.5" fill="#8899bb"/>
+                <circle cx="8"  cy="36" r="3.5" fill="#8899bb"/>
+                <circle cx="8"  cy="48" r="3.5" fill="#8899bb"/>
+                <circle cx="72" cy="24" r="3.5" fill="#8899bb"/>
+                <circle cx="72" cy="36" r="3.5" fill="#8899bb"/>
+                <circle cx="72" cy="48" r="3.5" fill="#8899bb"/>
+                <circle cx="30" cy="8"  r="3.5" fill="#8899bb"/>
+                <circle cx="40" cy="8"  r="3.5" fill="#8899bb"/>
+                <circle cx="50" cy="8"  r="3.5" fill="#8899bb"/>
+                <circle cx="30" cy="64" r="3.5" fill="#8899bb"/>
+                <circle cx="40" cy="64" r="3.5" fill="#8899bb"/>
+                <circle cx="50" cy="64" r="3.5" fill="#8899bb"/>
+              </svg>
+              <div class="img-placeholder-label">Fenster · Messpunkte</div>
+            </div>
+            <div class="img-caption">Drei Punkte je Seite der Laibung – oben, seitlich, unten</div>
+          </div>
+          <div class="panel-form">
+            <div>
+              <div class="form-title">Fenstercheck</div>
+              <div class="form-desc">Messen Sie jeweils drei Punkte oberhalb, seitlich und unterhalb des Fensters in der Laibung.</div>
+            </div>
+            <div class="fenster-grid">
+              <div class="f-top">
+                <div class="f-inp"><span class="f-inp-label">O1</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">O2</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">O3</span><input type="number" step="0.1" placeholder="—"></div>
+              </div>
+              <div class="f-left">
+                <div class="f-inp"><span class="f-inp-label">L1</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">L2</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">L3</span><input type="number" step="0.1" placeholder="—"></div>
+              </div>
+              <div class="f-box">Glas</div>
+              <div class="f-right">
+                <div class="f-inp"><span class="f-inp-label">R1</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">R2</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">R3</span><input type="number" step="0.1" placeholder="—"></div>
+              </div>
+              <div class="f-bottom">
+                <div class="f-inp"><span class="f-inp-label">U1</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">U2</span><input type="number" step="0.1" placeholder="—"></div>
+                <div class="f-inp"><span class="f-inp-label">U3</span><input type="number" step="0.1" placeholder="—"></div>
+              </div>
+            </div>
+            <div class="loading-hint" id="load-fenster">⏳ Analyse läuft…</div>
+            <button class="btn-calc" id="btn-fenster" onclick="calcFenster()">Berechnen</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-result" id="res-fenster">
+        <div class="result-view">
+          <div class="result-header">
+            <div class="result-title">Auswertung – Fenstercheck</div>
+            <div class="result-actions">
+              <button class="btn-back"  onclick="backToInput('fenster')">← Zurück</button>
+              <button class="btn-print" onclick="window.print()">Drucken / PDF</button>
+            </div>
+          </div>
+          <div id="res-fenster-content"></div>
+        </div>
+        <div class="footer">Taupunktberechnung nach Magnus-Formel · Bewertung ersetzt keine sachverständige Begutachtung.</div>
+      </div>
+    </div>
+
+    <!-- TAB 5: FLÄCHENCHECK -->
+    <div id="panel-flaeche" class="panel">
+      <div class="panel-input" id="in-flaeche">
+        <div class="panel-body">
+          <div class="panel-img">
+            <div class="img-placeholder">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="8" width="64" height="64" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
+                <circle cx="22" cy="22" r="3" fill="#8899bb"/>
+                <circle cx="40" cy="22" r="3" fill="#8899bb"/>
+                <circle cx="58" cy="22" r="3" fill="#8899bb"/>
+                <circle cx="22" cy="40" r="3" fill="#8899bb"/>
+                <circle cx="40" cy="40" r="3" fill="#8899bb"/>
+                <circle cx="58" cy="40" r="3" fill="#8899bb"/>
+                <circle cx="22" cy="58" r="3" fill="#8899bb"/>
+                <circle cx="40" cy="58" r="3" fill="#8899bb"/>
+                <circle cx="58" cy="58" r="3" fill="#8899bb"/>
+              </svg>
+              <div class="img-placeholder-label">Fläche · 5×5 Raster</div>
+            </div>
+            <div class="img-caption">5 Punkte horizontal und vertikal – systematisches Raster</div>
+          </div>
+          <div class="panel-form">
+            <div>
+              <div class="form-title">Flächencheck</div>
+              <div class="form-desc">Messen Sie jeweils 5 Punkte horizontal und vertikal auf der zu messenden Wand oder sonstigen Fläche.</div>
+            </div>
+            <div class="flaeche-grid-wrap">
+              <div class="flaeche-grid" id="flaeche-grid"></div>
+            </div>
+            <div class="loading-hint" id="load-flaeche">⏳ Analyse läuft…</div>
+            <button class="btn-calc" id="btn-flaeche" onclick="calcFlaeche()">Berechnen</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-result" id="res-flaeche">
+        <div class="result-view">
+          <div class="result-header">
+            <div class="result-title">Auswertung – Flächencheck</div>
+            <div class="result-actions">
+              <button class="btn-back"  onclick="backToInput('flaeche')">← Zurück</button>
+              <button class="btn-print" onclick="window.print()">Drucken / PDF</button>
+            </div>
+          </div>
+          <div id="res-flaeche-content"></div>
+        </div>
+        <div class="footer">Taupunktberechnung nach Magnus-Formel · Bewertung ersetzt keine sachverständige Begutachtung.</div>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /app -->
+
+<script>
+// ================================================
+// V5 – API-basiert. Keine lokale Diagnoselogik.
+// Alle Berechnungen liegen im Backend (Python/FastAPI).
+// ================================================
+
+const API_URL = "https://schimmel-api.onrender.com/calculate";
+
+var activeTab = 'p-ecke';
+var hasResult = {};
+
+// ===== HILFSFUNKTIONEN =====
+function fmt(n) { return n.toFixed(1).replace('.', ','); }
+
+function getRoomVals() {
+  var tr = parseFloat(document.getElementById('tRoom').value);
+  var rh = parseFloat(document.getElementById('rH').value);
+  return { tr, rh, valid: !isNaN(tr) && !isNaN(rh) };
+}
+
+// ===== AMPELFARBE NUR AUS scenario_id (UI macht keine Schwellenwertberechnung) =====
+function colorFromScenario(scenario_id) {
+  if (!scenario_id) return '#cccccc';
+  const s = scenario_id.toLowerCase();
+  if (s.includes('s7') || s.includes('akut'))          return '#FF2800';
+  if (s.includes('fall a'))                             return '#FF6B6B';
+  if (s.includes('a2'))                                 return '#FFD300';
+  if (s.includes('fall b') || s.includes('nutzung'))   return '#FFE066';
+  if (s.includes('fall c') || s.includes('misch'))     return '#FFE896';
+  if (s.includes('d1') || s.includes('d2') || s.includes('d3')) return '#A8E6C8';
+  if (s.includes('alles ok') || s.includes('unauff'))  return '#00A859';
+  return '#cccccc';
+}
+
+// ===== AMPELFARBE FÜR MATRIX-ZELLEN (nur visuelle Farbgebung der Rohdaten) =====
+function cellColor(t) {
+  if (t <= 14.9) return '#FF2800';
+  if (t <= 15.4) return '#FF6B6B';
+  if (t <= 16.5) return '#FFADAD';
+  if (t <= 17.0) return '#FFD300';
+  if (t <= 17.4) return '#FFE066';
+  if (t <= 18.5) return '#FFE896';
+  if (t <= 19.0) return '#A8E6C8';
+  if (t <= 19.5) return '#48C78E';
+  return '#00A859';
+}
+
+// ===== SZENARIO-LABEL LESBAR MACHEN =====
+function scenarioLabel(scenario_id) {
+  if (!scenario_id) return '–';
+  return scenario_id
+    .replace('Fall ', '')
+    .replace('(', '')
+    .replace(')', '')
+    .trim();
+}
+
+// ===== LOADING STATE =====
+function setLoading(tabId, isLoading) {
+  var btn  = document.getElementById('btn-' + tabId);
+  var hint = document.getElementById('load-' + tabId);
+  if (btn)  { btn.disabled = isLoading; }
+  if (hint) { hint.classList.toggle('visible', isLoading); }
+}
+
+// ===== TABS =====
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+  activeTab = id;
+  updateNeuBtn();
+}
+
+function updateNeuBtn() {
+  var btn = document.getElementById('globalNeuBtn');
+  btn.classList.toggle('visible', !!hasResult[activeTab]);
+}
+
+function clearFields(tabId) {
+  const panel = document.getElementById('panel-' + tabId);
+  if (!panel) return;
+  panel.querySelectorAll('input[type=number]').forEach(i => i.value = '');
+}
+
+function globalNeueMessung() {
+  clearFields(activeTab);
+  backToInput(activeTab);
+}
+
+function showResult(tabId) {
+  document.getElementById('in-' + tabId).classList.add('hidden');
+  document.getElementById('res-' + tabId).classList.add('visible');
+  hasResult[tabId] = true;
+  updateNeuBtn();
+}
+
+function backToInput(tabId) {
+  document.getElementById('in-' + tabId).classList.remove('hidden');
+  document.getElementById('res-' + tabId).classList.remove('visible');
+  hasResult[tabId] = false;
+  updateNeuBtn();
+}
+
+// ================================================
+// ZENTRALE API-FUNKTION
+// ================================================
+async function callSchimmelAPI(t_raum, rF_raum, punkte) {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ t_raum, rF_raum, punkte })
+  });
+  if (!response.ok) throw new Error("API-Fehler " + response.status + ": " + response.statusText);
+  const data = await response.json();
+  console.log("API RESULT:", data);
+  return data;
+}
+
+// ================================================
+// RESULT CARD – baut aus API-Antwort die Darstellung
+// ================================================
+function buildResultCard(analyse, tSurf) {
+  const { taupunkt, taupunkt_abstand, surfRH, delta_t, scenario_id, ursache, befund1, befund2, befund3 } = analyse;
+  const chipColor  = colorFromScenario(scenario_id);
+  const riskLabel  = surfRH >= 90 ? 'AKUT' : surfRH >= 80 ? 'HOCH' : surfRH >= 70 ? 'ERHÖHT' : 'GERING';
+  const riskColor  = surfRH >= 90 ? '#FF2800' : surfRH >= 80 ? '#FF6B6B' : surfRH >= 70 ? '#c08000' : '#00A859';
+  const riskPct    = Math.min(96, Math.max(4, surfRH - 38));
+  const dpClass    = taupunkt_abstand < 2 ? ' danger' : '';
+  const rhClass    = surfRH > 80 ? ' danger' : surfRH > 70 ? ' warning' : '';
+
+  const befundBlock = (befund1 || befund2 || befund3) ? `
+  <div class="befund-section">
+    <div class="befund-header">Ursachenbewertung</div>
+    ${ursache ? `<div class="befund-ursache">${ursache}</div>` : ''}
+    ${befund1 ? `<div class="befund-block"><div class="befund-label">Wandtemperatur</div><div class="befund-text">${befund1}</div></div>` : ''}
+    ${befund2 ? `<div class="befund-block"><div class="befund-label">Nutzung</div><div class="befund-text">${befund2}</div></div>` : ''}
+    ${befund3 ? `<div class="befund-block"><div class="befund-label">Empfehlung</div><div class="befund-text">${befund3}</div></div>` : ''}
+  </div>` : '';
+
+  return `
+  <div class="result-grid">
+    <div class="result-box">
+      <div class="result-box-label">Messwert-Bewertung</div>
+      <div class="ampel-block">
+        <div class="ampel-chip-big" style="background:${chipColor}">${fmt(tSurf)}</div>
+        <div class="ampel-info">
+          <div class="val">${fmt(tSurf)} °C Oberfläche</div>
+          <div class="sub">${scenarioLabel(scenario_id)}</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Taupunkt</span>
+        <span class="stat-val">${fmt(taupunkt)} °C</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Abstand zum Taupunkt</span>
+        <span class="stat-val${dpClass}">${fmt(taupunkt_abstand)} K</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Oberflächenfeuchte</span>
+        <span class="stat-val${rhClass}">${surfRH.toFixed(0)} % rF</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">ΔT Raum–Wand</span>
+        <span class="stat-val">${fmt(delta_t)} K</span>
+      </div>
+    </div>
+    <div class="risk-box" style="border-color:${riskColor}">
+      <div class="result-box-label" style="color:${riskColor}">Schimmelrisiko</div>
+      <div class="risk-level" style="color:${riskColor}">${riskLabel}</div>
+      <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${riskPct}%"></div></div>
+      <div class="risk-bar-labels"><span>gering</span><span>mittel</span><span>hoch</span><span>akut</span></div>
+    </div>
+  </div>
+  ${befundBlock}`;
+}
+
+// ===== KRITISCHSTEN PUNKT FINDEN (höchste surfRH) =====
+function findKritisch(punkte) {
+  return punkte.reduce((a, b) => a.analyse.surfRH > b.analyse.surfRH ? a : b);
+}
+
+// ================================================
+// CALC FUNKTIONEN – nur Inputs lesen + API rufen
+// ================================================
+
+async function calcPunktEcke() {
+  const r = getRoomVals();
+  const punkte = ['pe-1','pe-2','pe-3']
+    .map((id, i) => ({ name: `P${i+1}`, temp: parseFloat(document.getElementById(id).value) }))
+    .filter(p => !isNaN(p.temp));
+  if (!r.valid || punkte.length === 0) { alert('Bitte Raumdaten und mindestens einen Messpunkt eingeben.'); return; }
+  setLoading('p-ecke', true);
+  try {
+    const data    = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch = findKritisch(data.punkte);
+    document.getElementById('res-p-ecke-content').innerHTML =
+      `<p style="font-size:14px;font-weight:600;color:#666;margin-bottom:16px">Kritischster Messpunkt: <strong>${fmt(kritisch.temp)} °C</strong></p>` +
+      buildResultCard(kritisch.analyse, kritisch.temp);
+    showResult('p-ecke');
+  } catch(e) {
+    document.getElementById('res-p-ecke-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
+    showResult('p-ecke');
+  } finally { setLoading('p-ecke', false); }
+}
+
+async function calcPunktFlaeche() {
+  const r = getRoomVals();
+  const punkte = ['pf-1','pf-2','pf-3']
+    .map((id, i) => ({ name: `P${i+1}`, temp: parseFloat(document.getElementById(id).value) }))
+    .filter(p => !isNaN(p.temp));
+  if (!r.valid || punkte.length === 0) { alert('Bitte Raumdaten und mindestens einen Messpunkt eingeben.'); return; }
+  const temps  = punkte.map(p => p.temp);
+  const avg    = temps.reduce((a,b) => a+b, 0) / temps.length;
+  const maxDev = Math.max(...temps.map(v => Math.abs(v - avg)));
+  const outlier = maxDev > 2 && punkte.length === 3
+    ? `<div class="outlier-note">⚠ Ein Messpunkt weicht deutlich vom Durchschnitt ab (${fmt(maxDev)} K). Wiederholungsmessung empfohlen.</div>`
+    : '';
+  setLoading('p-flaeche', true);
+  try {
+    const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch  = findKritisch(data.punkte);
+    document.getElementById('res-p-flaeche-content').innerHTML =
+      outlier +
+      `<p style="font-size:14px;font-weight:600;color:#666;margin-bottom:16px">Kritischster Messpunkt: <strong>${fmt(kritisch.temp)} °C</strong></p>` +
+      buildResultCard(kritisch.analyse, kritisch.temp);
+    showResult('p-flaeche');
+  } catch(e) {
+    document.getElementById('res-p-flaeche-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
+    showResult('p-flaeche');
+  } finally { setLoading('p-flaeche', false); }
+}
+
+async function calcRaumecke() {
+  const r = getRoomVals();
+  if (!r.valid) { alert('Raumdaten eingeben.'); return; }
+  const rowLabels = ['Decke','Wand oben','Wand Mitte','Wand unten'];
+  const colLabels = ['Wand1','EckeA','EckeI','Wand2'];
+  const inputs    = document.querySelectorAll('#raumecke-table tbody input');
+  const rawVals   = Array.from(inputs).map(i => parseFloat(i.value));
+  const punkte    = [];
+  rawVals.forEach((v, i) => {
+    if (!isNaN(v)) punkte.push({ name: `${rowLabels[Math.floor(i/4)]}_${colLabels[i%4]}`, temp: v });
+  });
+  if (punkte.length === 0) { alert('Mindestens einen Wert eingeben.'); return; }
+  setLoading('raumecke', true);
+  try {
+    const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch  = findKritisch(data.punkte);
+    // Matrix-Tabelle
+    let h = '<div class="result-matrix"><table><thead><tr><th class="left"></th>';
+    colLabels.forEach(c => h += `<th>${c}</th>`);
+    h += '</tr></thead><tbody>';
+    for (let row = 0; row < 4; row++) {
+      h += `<tr><td class="row-label">${rowLabels[row]}</td>`;
+      for (let col = 0; col < 4; col++) {
+        const v = rawVals[row*4+col];
+        h += !isNaN(v) ? `<td style="background:${cellColor(v)}">${fmt(v)}</td>` : '<td style="color:#ccc">—</td>';
+      }
+      h += '</tr>';
+    }
+    h += '</tbody></table></div>';
+    h += buildResultCard(kritisch.analyse, kritisch.temp);
+    document.getElementById('res-raumecke-content').innerHTML = h;
+    showResult('raumecke');
+  } catch(e) {
+    document.getElementById('res-raumecke-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
+    showResult('raumecke');
+  } finally { setLoading('raumecke', false); }
+}
+
+async function calcFenster() {
+  const r = getRoomVals();
+  if (!r.valid) { alert('Raumdaten eingeben.'); return; }
+  const fenLabels = ['O1','O2','O3','L1','L2','L3','R1','R2','R3','U1','U2','U3'];
+  const inputs    = document.querySelectorAll('#panel-fenster .f-inp input');
+  const punkte    = [];
+  inputs.forEach((inp, i) => {
+    const v = parseFloat(inp.value);
+    if (!isNaN(v)) punkte.push({ name: fenLabels[i] || `P${i+1}`, temp: v });
+  });
+  if (punkte.length === 0) { alert('Mindestens einen Messpunkt eingeben.'); return; }
+  setLoading('fenster', true);
+  try {
+    const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch  = findKritisch(data.punkte);
+    document.getElementById('res-fenster-content').innerHTML = buildResultCard(kritisch.analyse, kritisch.temp);
+    showResult('fenster');
+  } catch(e) {
+    document.getElementById('res-fenster-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
+    showResult('fenster');
+  } finally { setLoading('fenster', false); }
+}
+
+async function calcFlaeche() {
+  const r = getRoomVals();
+  if (!r.valid) { alert('Raumdaten eingeben.'); return; }
+  const rows   = ['A','B','C','D','E'];
+  const inputs = document.querySelectorAll('#flaeche-grid input');
+  const punkte = [];
+  inputs.forEach((inp, i) => {
+    const v = parseFloat(inp.value);
+    if (!isNaN(v)) punkte.push({ name: `${rows[Math.floor(i/5)]}${(i%5)+1}`, temp: v });
+  });
+  if (punkte.length === 0) { alert('Mindestens einen Messpunkt eingeben.'); return; }
+  setLoading('flaeche', true);
+  try {
+    const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch  = findKritisch(data.punkte);
+    document.getElementById('res-flaeche-content').innerHTML = buildResultCard(kritisch.analyse, kritisch.temp);
+    showResult('flaeche');
+  } catch(e) {
+    document.getElementById('res-flaeche-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
+    showResult('flaeche');
+  } finally { setLoading('flaeche', false); }
+}
+
+// ===== FLÄCHEN-GRID BAUEN =====
+(function() {
+  const rows = ['A','B','C','D','E'];
+  let h = '<div></div>';
+  for (let c = 1; c <= 5; c++) h += `<div class="flaeche-col-label">${c}</div>`;
+  rows.forEach(row => {
+    h += `<div class="flaeche-row-label">${row}</div>`;
+    for (let col = 1; col <= 5; col++) h += `<input type="number" step="0.1" placeholder="${row}${col}">`;
+  });
+  document.getElementById('flaeche-grid').innerHTML = h;
+})();
+
+// ================================================
+// AUTO-HÖHE FÜR IFRAME-EINBETTUNG (z.B. WordPress)
+// Meldet die aktuelle Seitenhöhe an das Parent-Fenster.
+// ================================================
+(function() {
+  function postHeight() {
+    var h = document.documentElement.scrollHeight;
+    window.parent.postMessage({ schimmelHeight: h }, '*');
+  }
+  // Sofort + bei jeder Größenänderung
+  postHeight();
+  if (window.ResizeObserver) {
+    new ResizeObserver(postHeight).observe(document.body);
+  } else {
+    window.addEventListener('resize', postHeight);
+  }
+})();
+
+</script>
+</body>
+</html>
