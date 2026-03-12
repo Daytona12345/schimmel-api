@@ -29,7 +29,7 @@
   --text-on-dark:   #ffffff;
   --text-on-dark-2: rgba(255,255,255,0.65);
 
-  --input-bg:           #f5f6f8;
+  --input-bg:           #e0e3e8;
   --input-border:       #cccccc;
   --input-border-focus: #1a4a8a;
   --input-font-size:    26px;
@@ -193,7 +193,7 @@ body {
 .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 @media (max-width: 560px) { .result-grid { grid-template-columns: 1fr; } }
 
-.result-box { border: 2px solid #e8e8e8; border-radius: var(--radius); padding: 20px; }
+.result-box { border: 2px solid #1a4a8a; border-radius: var(--radius); padding: 20px; }
 .result-box-label { font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-bottom: 14px; }
 
 .ampel-block { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
@@ -202,12 +202,12 @@ body {
 .ampel-info .sub { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-top: 3px; }
 
 .stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-top: 1px solid #f0f0f0; font-size: 14px; }
-.stat-row .stat-label { color: var(--text-secondary); font-weight: 500; }
-.stat-row .stat-val   { font-weight: 700; color: var(--text-primary); font-size: 15px; }
+.stat-row .stat-label { color: var(--text-secondary); font-weight: 700; }
+.stat-row .stat-val   { font-weight: 800; color: var(--text-primary); font-size: 15px; }
 .stat-row .stat-val.danger  { color: var(--rot-stark); }
 .stat-row .stat-val.warning { color: #b07000; }
 
-.risk-box { border-radius: var(--radius); padding: 20px; border: 2px solid #e8e8e8; }
+.risk-box { border-radius: var(--radius); padding: 20px; border: 2px solid #1a4a8a; }
 .risk-level { font-family: var(--font-display); font-size: 26px; font-weight: 800; margin-bottom: 16px; }
 .risk-bar-bg { height: 10px; background: #f0f0f0; border-radius: 5px; overflow: hidden; margin-bottom: 8px; }
 .risk-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--gruen-stark), var(--gelb-stark), var(--rot-mittel), var(--rot-stark)); }
@@ -229,6 +229,29 @@ body {
 
 /* FOOTER */
 .footer { padding: 16px 28px; border-top: 1px solid #e8e8e8; font-size: 13px; font-weight: 500; color: var(--text-muted); line-height: 1.7; }
+
+/* ---- RAUTE EINGABE (Ecke) ---- */
+.raute-wrap { display: grid; grid-template-columns: 90px 90px 90px; grid-template-rows: auto auto auto; gap: 6px; align-items: center; justify-items: center; margin: 12px 0 20px; }
+.raute-tile { width: 82px; height: 64px; border-radius: 8px; background: var(--input-bg); border: 2px solid #b8bfcc; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.raute-tile input { width: 70px; background: transparent; border: none; outline: none; font-family: var(--font-body); font-size: 17px; font-weight: 700; text-align: center; color: var(--text-primary); -moz-appearance: textfield; }
+.raute-tile input::-webkit-outer-spin-button, .raute-tile input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.raute-tile-label { font-size: 11px; font-weight: 700; color: #666; letter-spacing: 0.5px; text-transform: uppercase; }
+.raute-spacer { width: 82px; height: 64px; }
+.raute-side-label { font-size: 12px; font-weight: 700; color: #1a4a8a; justify-self: start; }
+
+/* ---- RESULT KACHELN ---- */
+.kachel-grid-5x5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 20px; }
+.kachel-cell { border-radius: 6px; padding: 8px 4px; text-align: center; font-size: 13px; font-weight: 700; color: #111; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+.kachel-cell.empty { background: #d0d3d8; color: #999; font-weight: 400; }
+
+/* ---- RAUTE RESULT ---- */
+.raute-result-wrap { display: grid; grid-template-columns: 84px 84px 84px; gap: 4px; align-items: center; justify-items: center; margin-bottom: 20px; }
+.raute-result-tile { width: 80px; height: 58px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #111; gap: 2px; }
+.raute-result-label { font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.5); letter-spacing: 0.5px; text-transform: uppercase; }
+.raute-result-empty { width: 80px; height: 58px; background: transparent; }
+
+/* ---- KONFIDENZ HINWEIS ---- */
+.konfidenz-note { background: #fffbe6; border: 1px solid #f0d060; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #7a6000; margin-bottom: 14px; }
 
 
 /* BEFUND SECTION */
@@ -358,10 +381,31 @@ body {
               <div class="form-title">Punktcheck Ecke</div>
               <div class="form-desc">Messen Sie jeweils einen Punkt der drei Flächen dieser Ecke.</div>
             </div>
-            <div class="field-group">
-              <div class="field"><label class="field-label">Messpunkt 1 – oben (°C)</label><input type="number" id="pe-1" step="0.1" placeholder="z.B. 15,2"></div>
-              <div class="field"><label class="field-label">Messpunkt 2 – Mitte (°C)</label><input type="number" id="pe-2" step="0.1" placeholder="z.B. 14,8"></div>
-              <div class="field"><label class="field-label">Messpunkt 3 – unten (°C)</label><input type="number" id="pe-3" step="0.1" placeholder="z.B. 15,5"></div>
+            <div class="raute-wrap">
+              <!-- Zeile 1: Decke -->
+              <div class="raute-spacer"></div>
+              <div class="raute-tile">
+                <div class="raute-tile-label">Decke</div>
+                <input type="number" id="pe-decke" step="0.1" placeholder="°C">
+              </div>
+              <div class="raute-side-label">Obere Ecke</div>
+              <!-- Zeile 2: Wand 1 + Wand 2 -->
+              <div class="raute-tile">
+                <div class="raute-tile-label">Wand 1</div>
+                <input type="number" id="pe-wand1" step="0.1" placeholder="°C">
+              </div>
+              <div class="raute-spacer"></div>
+              <div class="raute-tile">
+                <div class="raute-tile-label">Wand 2</div>
+                <input type="number" id="pe-wand2" step="0.1" placeholder="°C">
+              </div>
+              <!-- Zeile 3: Boden -->
+              <div class="raute-spacer"></div>
+              <div class="raute-tile">
+                <div class="raute-tile-label">Boden</div>
+                <input type="number" id="pe-boden" step="0.1" placeholder="°C">
+              </div>
+              <div class="raute-side-label">Untere Ecke</div>
             </div>
             <div class="loading-hint" id="load-p-ecke">⏳ Analyse läuft…</div>
             <button class="btn-calc" id="btn-p-ecke" onclick="calcPunktEcke()">Berechnen</button>
@@ -749,9 +793,9 @@ async function callSchimmelAPI(t_raum, rF_raum, punkte) {
 function buildResultCard(analyse, tSurf) {
   const { taupunkt, taupunkt_abstand, surfRH, delta_t, scenario_id, ursache, befund1, befund2, befund3 } = analyse;
   const chipColor  = colorFromScenario(scenario_id);
-  const riskLabel  = surfRH >= 90 ? 'AKUT' : surfRH >= 80 ? 'HOCH' : surfRH >= 70 ? 'ERHÖHT' : 'GERING';
+  const riskLabel  = surfRH >= 90 ? 'AKUT' : surfRH >= 80 ? 'HOCH' : surfRH >= 70 ? 'GERING' : 'UNBEDENKLICH';
   const riskColor  = surfRH >= 90 ? '#FF2800' : surfRH >= 80 ? '#FF6B6B' : surfRH >= 70 ? '#c08000' : '#00A859';
-  const riskPct    = Math.min(96, Math.max(4, surfRH - 38));
+  const riskPct    = surfRH >= 90 ? Math.min(98, 75+((surfRH-90)/10)*23) : surfRH >= 80 ? 50+((surfRH-80)/10)*25 : surfRH >= 70 ? 25+((surfRH-70)/10)*25 : Math.max(2,(surfRH/70)*24);
   const dpClass    = taupunkt_abstand < 2 ? ' danger' : '';
   const rhClass    = surfRH > 80 ? ' danger' : surfRH > 70 ? ' warning' : '';
 
@@ -771,7 +815,7 @@ function buildResultCard(analyse, tSurf) {
       <div class="ampel-block">
         <div class="ampel-chip-big" style="background:${chipColor}">${fmt(tSurf)}</div>
         <div class="ampel-info">
-          <div class="val">${fmt(tSurf)} °C Oberfläche</div>
+          <div class="val">${fmt(tSurf)} °C – Auffälligste Temperatur</div>
           <div class="sub">${scenarioLabel(scenario_id)}</div>
         </div>
       </div>
@@ -780,23 +824,18 @@ function buildResultCard(analyse, tSurf) {
         <span class="stat-val">${fmt(taupunkt)} °C</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Abstand zum Taupunkt</span>
+        <span class="stat-label">Temperaturdifferenz zum Taupunkt</span>
         <span class="stat-val${dpClass}">${fmt(taupunkt_abstand)} K</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Oberflächenfeuchte</span>
+        <span class="stat-label">Relative Oberflächenfeuchtigkeit</span>
         <span class="stat-val${rhClass}">${surfRH.toFixed(0)} % rF</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">ΔT Raum–Wand</span>
-        <span class="stat-val">${fmt(delta_t)} K</span>
-      </div>
     </div>
-    <div class="risk-box" style="border-color:${riskColor}">
+    <div class="risk-box" style="border-color:#1a4a8a">
       <div class="result-box-label" style="color:${riskColor}">Schimmelrisiko</div>
       <div class="risk-level" style="color:${riskColor}">${riskLabel}</div>
       <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${riskPct}%"></div></div>
-      <div class="risk-bar-labels"><span>gering</span><span>mittel</span><span>hoch</span><span>akut</span></div>
+      <div class="risk-bar-labels"><span>unbedenklich</span><span>gering</span><span>hoch</span><span>akut</span></div>
     </div>
   </div>
   ${befundBlock}`;
@@ -811,18 +850,46 @@ function findKritisch(punkte) {
 // CALC FUNKTIONEN – nur Inputs lesen + API rufen
 // ================================================
 
+// ---- ECKE RAUTE RESULT BUILDER ----
+function buildEckeRaute(tiles, eckenTyp) {
+  function rTile(p, label) {
+    if (!p) return `<div class="raute-result-empty"></div>`;
+    return `<div class="raute-result-tile" style="background:${cellColor(p.temp)}"><div class="raute-result-label">${label}</div>${fmt(p.temp)} °C</div>`;
+  }
+  return `
+  <div style="font-size:13px;font-weight:700;color:#1a4a8a;margin-bottom:8px">${eckenTyp}</div>
+  <div class="raute-result-wrap">
+    <div></div>${rTile(tiles.decke,'Decke')}<div></div>
+    ${rTile(tiles.wand1,'Wand 1')}<div></div>${rTile(tiles.wand2,'Wand 2')}
+    <div></div>${rTile(tiles.boden,'Boden')}<div></div>
+  </div>`;
+}
+
 async function calcPunktEcke() {
   const r = getRoomVals();
-  const punkte = ['pe-1','pe-2','pe-3']
-    .map((id, i) => ({ name: `P${i+1}`, temp: parseFloat(document.getElementById(id).value) }))
-    .filter(p => !isNaN(p.temp));
+  const decke = parseFloat(document.getElementById('pe-decke').value);
+  const wand1 = parseFloat(document.getElementById('pe-wand1').value);
+  const wand2 = parseFloat(document.getElementById('pe-wand2').value);
+  const boden = parseFloat(document.getElementById('pe-boden').value);
+  const hasDecke = !isNaN(decke), hasBoden = !isNaN(boden);
+  const eckenTyp = hasDecke ? 'Obere Ecke' : hasBoden ? 'Untere Ecke' : 'Ecke';
+  const punkte = [];
+  if (hasDecke)      punkte.push({ name: 'Decke', temp: decke });
+  if (!isNaN(wand1)) punkte.push({ name: 'Wand1', temp: wand1 });
+  if (!isNaN(wand2)) punkte.push({ name: 'Wand2', temp: wand2 });
+  if (hasBoden)      punkte.push({ name: 'Boden', temp: boden });
   if (!r.valid || punkte.length === 0) { alert('Bitte Raumdaten und mindestens einen Messpunkt eingeben.'); return; }
+  const konfidenz = punkte.length < 3 ? `<div class="konfidenz-note">⚠ Wenn Sie weniger Punkte nehmen als möglich, vermindert das die Zuverlässigkeit der Auswertung.</div>` : '';
   setLoading('p-ecke', true);
   try {
-    const data    = await callSchimmelAPI(r.tr, r.rh, punkte);
-    const kritisch = findKritisch(data.punkte);
+    const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch  = findKritisch(data.punkte);
+    const resMap   = {};
+    data.punkte.forEach(p => { resMap[p.name] = p; });
+    const rauteHtml = buildEckeRaute({ decke: resMap['Decke'], wand1: resMap['Wand1'], wand2: resMap['Wand2'], boden: resMap['Boden'] }, eckenTyp);
     document.getElementById('res-p-ecke-content').innerHTML =
-      `<p style="font-size:14px;font-weight:600;color:#666;margin-bottom:16px">Kritischster Messpunkt: <strong>${fmt(kritisch.temp)} °C</strong></p>` +
+      konfidenz + rauteHtml +
+      `<p style="font-size:14px;font-weight:600;color:#666;margin-bottom:16px">Auffälligste Temperatur: <strong>${fmt(kritisch.temp)} °C</strong></p>` +
       buildResultCard(kritisch.analyse, kritisch.temp);
     showResult('p-ecke');
   } catch(e) {
@@ -849,7 +916,7 @@ async function calcPunktFlaeche() {
     const kritisch  = findKritisch(data.punkte);
     document.getElementById('res-p-flaeche-content').innerHTML =
       outlier +
-      `<p style="font-size:14px;font-weight:600;color:#666;margin-bottom:16px">Kritischster Messpunkt: <strong>${fmt(kritisch.temp)} °C</strong></p>` +
+      `<p style="font-size:14px;font-weight:600;color:#666;margin-bottom:16px">Auffälligste Temperatur: <strong>${fmt(kritisch.temp)} °C</strong></p>` +
       buildResultCard(kritisch.analyse, kritisch.temp);
     showResult('p-flaeche');
   } catch(e) {
@@ -901,17 +968,28 @@ async function calcFenster() {
   if (!r.valid) { alert('Raumdaten eingeben.'); return; }
   const fenLabels = ['O1','O2','O3','L1','L2','L3','R1','R2','R3','U1','U2','U3'];
   const inputs    = document.querySelectorAll('#panel-fenster .f-inp input');
+  const rawVals   = Array.from(inputs).map(i => parseFloat(i.value));
   const punkte    = [];
-  inputs.forEach((inp, i) => {
-    const v = parseFloat(inp.value);
-    if (!isNaN(v)) punkte.push({ name: fenLabels[i] || `P${i+1}`, temp: v });
-  });
+  rawVals.forEach((v, i) => { if (!isNaN(v)) punkte.push({ name: fenLabels[i], temp: v }); });
   if (punkte.length === 0) { alert('Mindestens einen Messpunkt eingeben.'); return; }
+  const konfidenz = punkte.length < 12 ? `<div class="konfidenz-note">⚠ Wenn Sie weniger Punkte nehmen als möglich, vermindert das die Zuverlässigkeit der Auswertung.</div>` : '';
   setLoading('fenster', true);
   try {
     const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
     const kritisch  = findKritisch(data.punkte);
-    document.getElementById('res-fenster-content').innerHTML = buildResultCard(kritisch.analyse, kritisch.temp);
+    function fTile(v) {
+      return !isNaN(v)
+        ? `<div class="kachel-cell" style="background:${cellColor(v)};flex:1">${fmt(v)}</div>`
+        : `<div class="kachel-cell empty" style="flex:1">—</div>`;
+    }
+    const topRow    = `<div style="display:flex;gap:4px;grid-column:1/4">${fTile(rawVals[0])}${fTile(rawVals[1])}${fTile(rawVals[2])}</div>`;
+    const leftCol   = `<div style="display:flex;flex-direction:column;gap:4px">${fTile(rawVals[3])}${fTile(rawVals[4])}${fTile(rawVals[5])}</div>`;
+    const center    = `<div style="background:#d8dde6;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#7a8aaa;letter-spacing:1px;min-height:80px">GLAS</div>`;
+    const rightCol  = `<div style="display:flex;flex-direction:column;gap:4px">${fTile(rawVals[6])}${fTile(rawVals[7])}${fTile(rawVals[8])}</div>`;
+    const bottomRow = `<div style="display:flex;gap:4px;grid-column:1/4">${fTile(rawVals[9])}${fTile(rawVals[10])}${fTile(rawVals[11])}</div>`;
+    const fenHtml = `<div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:4px;margin-bottom:20px;max-width:320px">${topRow}${leftCol}${center}${rightCol}${bottomRow}</div>`;
+    document.getElementById('res-fenster-content').innerHTML =
+      konfidenz + fenHtml + buildResultCard(kritisch.analyse, kritisch.temp);
     showResult('fenster');
   } catch(e) {
     document.getElementById('res-fenster-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
@@ -924,17 +1002,26 @@ async function calcFlaeche() {
   if (!r.valid) { alert('Raumdaten eingeben.'); return; }
   const rows   = ['A','B','C','D','E'];
   const inputs = document.querySelectorAll('#flaeche-grid input');
-  const punkte = [];
-  inputs.forEach((inp, i) => {
-    const v = parseFloat(inp.value);
+  const rawVals = Array.from(inputs).map(i => parseFloat(i.value)); // 25 Werte, NaN wenn leer
+  const punkte  = [];
+  rawVals.forEach((v, i) => {
     if (!isNaN(v)) punkte.push({ name: `${rows[Math.floor(i/5)]}${(i%5)+1}`, temp: v });
   });
   if (punkte.length === 0) { alert('Mindestens einen Messpunkt eingeben.'); return; }
+  const konfidenz = punkte.length < 25 ? `<div class="konfidenz-note">⚠ Wenn Sie weniger Punkte nehmen als möglich, vermindert das die Zuverlässigkeit der Auswertung.</div>` : '';
   setLoading('flaeche', true);
   try {
     const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
     const kritisch  = findKritisch(data.punkte);
-    document.getElementById('res-flaeche-content').innerHTML = buildResultCard(kritisch.analyse, kritisch.temp);
+    let gridH = '<div class="kachel-grid-5x5">';
+    rawVals.forEach(v => {
+      gridH += !isNaN(v)
+        ? `<div class="kachel-cell" style="background:${cellColor(v)}">${fmt(v)}</div>`
+        : `<div class="kachel-cell empty">—</div>`;
+    });
+    gridH += '</div>';
+    document.getElementById('res-flaeche-content').innerHTML =
+      konfidenz + gridH + buildResultCard(kritisch.analyse, kritisch.temp);
     showResult('flaeche');
   } catch(e) {
     document.getElementById('res-flaeche-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
