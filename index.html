@@ -124,11 +124,12 @@ body {
 .panel-body { display: grid; grid-template-columns: 1fr 1fr; min-height: 440px; }
 @media (max-width: 640px) { .panel-body { grid-template-columns: 1fr; } .panel-img { display: none; } }
 
-.panel-img { background: #e8edf5; border-right: 2px solid #dde4f0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 28px; gap: 16px; }
-.img-placeholder { width: 100%; max-width: 280px; aspect-ratio: 4/3; background: #d0d8ea; border-radius: var(--radius); border: 2px dashed #b0bcd0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #7a8aaa; }
+.panel-img { background: #e8edf5; border-right: 2px solid #dde4f0; display: flex; flex-direction: column; }
+.panel-img img { width: 100%; flex: 1; object-fit: cover; display: block; min-height: 0; }
+.img-caption { font-size: 14px; font-weight: 600; color: #555; text-align: center; padding: 10px 16px; background: #e8edf5; border-top: 1px solid #dde4f0; }
+.img-placeholder { width: 100%; flex: 1; background: #d0d8ea; border: 2px dashed #b0bcd0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #7a8aaa; min-height: 200px; }
 .img-placeholder svg { width: 52px; height: 52px; opacity: 0.5; }
 .img-placeholder-label { font-family: var(--font-display); font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #556; }
-.img-caption { font-size: 15px; font-weight: 600; color: #333; text-align: center; line-height: 1.5; max-width: 260px; }
 
 .panel-form { padding: 32px 28px; display: flex; flex-direction: column; gap: 22px; }
 .form-title { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
@@ -191,7 +192,7 @@ body {
 .btn-print:hover { background: #0f3070; }
 
 .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-@media (max-width: 560px) { .result-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .result-grid { grid-template-columns: 1fr; } }
 
 .result-box { border: 2px solid #1a4a8a; border-radius: var(--radius); padding: 20px; }
 .result-box-label { font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-bottom: 14px; }
@@ -230,7 +231,12 @@ body {
 /* FOOTER */
 .footer { padding: 16px 28px; border-top: 1px solid #e8e8e8; font-size: 13px; font-weight: 500; color: var(--text-muted); line-height: 1.7; }
 
-/* ---- RAUTE EINGABE (Ecke) ---- */
+/* ---- DECKENANSCHLUSS EINGABE ---- */
+.field-row-label { font-size: 13px; font-weight: 800; color: #1a4a8a; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; margin-top: 8px; }
+.field-row { display: flex; gap: 6px; flex-wrap: nowrap; }
+.field-row input { font-family: var(--font-body); font-size: 15px; font-weight: 700; color: var(--text-primary); background: var(--input-bg); border: 2px solid var(--input-border); border-radius: 4px; padding: 8px 3px; width: 100%; text-align: center; outline: none; appearance: textfield; min-width: 0; }
+.field-row input::-webkit-outer-spin-button, .field-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-row input:focus { border-color: var(--input-border-focus); background: #fff; }
 .raute-wrap { display: grid; grid-template-columns: 90px 90px 90px; grid-template-rows: auto auto auto; gap: 6px; align-items: center; justify-items: center; margin: 12px 0 20px; }
 .raute-tile { width: 82px; height: 64px; border-radius: 8px; background: var(--input-bg); border: 2px solid #b8bfcc; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .raute-tile input { width: 70px; background: transparent; border: none; outline: none; font-family: var(--font-body); font-size: 17px; font-weight: 700; text-align: center; color: var(--text-primary); -moz-appearance: textfield; }
@@ -245,10 +251,10 @@ body {
 .kachel-cell.empty { background: #d0d3d8; color: #999; font-weight: 400; }
 
 /* ---- RAUTE RESULT ---- */
-.raute-result-wrap { display: grid; grid-template-columns: 84px 84px 84px; gap: 4px; align-items: center; justify-items: center; margin-bottom: 20px; }
-.raute-result-tile { width: 80px; height: 58px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #111; gap: 2px; }
-.raute-result-label { font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.5); letter-spacing: 0.5px; text-transform: uppercase; }
-.raute-result-empty { width: 80px; height: 58px; background: transparent; }
+.raute-result-wrap { display: grid; grid-template-columns: 84px 84px 84px; grid-template-rows: 58px 58px 58px; gap: 4px; align-items: center; justify-items: center; margin-bottom: 20px; }
+.raute-result-tile { width: 80px; height: 56px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #111; gap: 2px; }
+.raute-result-label { font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.45); letter-spacing: 0.5px; text-transform: uppercase; }
+.raute-result-empty { width: 80px; height: 56px; }
 
 /* ---- KONFIDENZ HINWEIS ---- */
 .konfidenz-note { background: #fffbe6; border: 1px solid #f0d060; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #7a6000; margin-bottom: 14px; }
@@ -351,9 +357,10 @@ body {
     <nav class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('p-ecke',   this)">Punktcheck Ecke</button>
       <button class="tab-btn"        onclick="switchTab('p-flaeche',this)">Punktcheck Fläche</button>
-      <button class="tab-btn"        onclick="switchTab('raumecke', this)">Raumecke</button>
       <button class="tab-btn"        onclick="switchTab('fenster',  this)">Fenstercheck</button>
       <button class="tab-btn"        onclick="switchTab('flaeche',  this)">Flächencheck</button>
+      <button class="tab-btn"        onclick="switchTab('decke',    this)">Deckenanschluss</button>
+      <button class="tab-btn"        onclick="switchTab('raumecke', this)">Raumecke</button>
     </nav>
 
     <!-- TAB 1: PUNKTCHECK ECKE -->
@@ -361,25 +368,13 @@ body {
       <div class="panel-input" id="in-p-ecke">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="10" width="60" height="60" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <line x1="10" y1="10" x2="40" y2="40" stroke="#8899bb" stroke-width="1.5" stroke-dasharray="4 3"/>
-                <circle cx="22" cy="22" r="5" fill="#8899bb"/>
-                <circle cx="40" cy="40" r="5" fill="#8899bb"/>
-                <circle cx="58" cy="58" r="5" fill="#8899bb"/>
-                <text x="29" y="26" font-size="10" fill="#8899bb" font-weight="bold">1</text>
-                <text x="47" y="44" font-size="10" fill="#8899bb" font-weight="bold">2</text>
-                <text x="62" y="56" font-size="10" fill="#8899bb" font-weight="bold">3</text>
-              </svg>
-              <div class="img-placeholder-label">Ecke · 3 Messpunkte</div>
-            </div>
-            <div class="img-caption">Einen Punkt je Fläche der Ecke messen</div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Ecke-oben.jpg" alt="Punktcheck Ecke">
+            <div class="img-caption">Schema der Messung</div>
           </div>
           <div class="panel-form">
             <div>
               <div class="form-title">Punktcheck Ecke</div>
-              <div class="form-desc">Messen Sie jeweils einen Punkt der drei Flächen dieser Ecke.</div>
+              <div class="form-desc">Messen Sie die drei Punkte einer Ecke, oben oder unten.</div>
             </div>
             <div class="raute-wrap">
               <!-- Zeile 1: Decke -->
@@ -391,12 +386,10 @@ body {
               <div class="raute-side-label">Obere Ecke</div>
               <!-- Zeile 2: Wand 1 + Wand 2 -->
               <div class="raute-tile">
-                <div class="raute-tile-label">Wand 1</div>
                 <input type="number" id="pe-wand1" step="0.1" placeholder="°C">
               </div>
               <div class="raute-spacer"></div>
               <div class="raute-tile">
-                <div class="raute-tile-label">Wand 2</div>
                 <input type="number" id="pe-wand2" step="0.1" placeholder="°C">
               </div>
               <!-- Zeile 3: Boden -->
@@ -432,19 +425,8 @@ body {
       <div class="panel-input" id="in-p-flaeche">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="10" width="60" height="60" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <circle cx="24" cy="24" r="5" fill="#8899bb"/>
-                <circle cx="56" cy="38" r="5" fill="#8899bb"/>
-                <circle cx="30" cy="58" r="5" fill="#8899bb"/>
-                <text x="31" y="28" font-size="10" fill="#8899bb" font-weight="bold">1</text>
-                <text x="63" y="42" font-size="10" fill="#8899bb" font-weight="bold">2</text>
-                <text x="37" y="62" font-size="10" fill="#8899bb" font-weight="bold">3</text>
-              </svg>
-              <div class="img-placeholder-label">Fläche · 3 Messpunkte</div>
-            </div>
-            <div class="img-caption">Drei zusammenliegende Punkte im Messbereich</div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Punkt_Flaeche.jpg" alt="Punktcheck Fläche">
+            <div class="img-caption">Schema der Messung</div>
           </div>
           <div class="panel-form">
             <div>
@@ -476,29 +458,71 @@ body {
       </div>
     </div>
 
-    <!-- TAB 3: RAUMECKE -->
+    <!-- TAB 5: DECKENANSCHLUSS -->
+    <div id="panel-decke" class="panel">
+      <div class="panel-input" id="in-decke">
+        <div class="panel-body">
+          <div class="panel-img">
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Deckenanschluss.jpg" alt="Deckenanschluss">
+            <div class="img-caption">Schema der Messung</div>
+          </div>
+          <div class="panel-form">
+            <div>
+              <div class="form-title">Deckenanschluss</div>
+              <div class="form-desc">Messen Sie jeweils 6 Punkte der Decke und der Wand dicht an der Ecke.</div>
+            </div>
+            <div class="field-group">
+              <div class="field-row-label">Decke</div>
+              <div class="field-row">
+                <input type="number" id="da-d1" step="0.1" placeholder="1">
+                <input type="number" id="da-d2" step="0.1" placeholder="2">
+                <input type="number" id="da-d3" step="0.1" placeholder="3">
+                <input type="number" id="da-d4" step="0.1" placeholder="4">
+                <input type="number" id="da-d5" step="0.1" placeholder="5">
+                <input type="number" id="da-d6" step="0.1" placeholder="6">
+              </div>
+              <div class="field-row-label">Wand</div>
+              <div class="field-row">
+                <input type="number" id="da-w1" step="0.1" placeholder="1">
+                <input type="number" id="da-w2" step="0.1" placeholder="2">
+                <input type="number" id="da-w3" step="0.1" placeholder="3">
+                <input type="number" id="da-w4" step="0.1" placeholder="4">
+                <input type="number" id="da-w5" step="0.1" placeholder="5">
+                <input type="number" id="da-w6" step="0.1" placeholder="6">
+              </div>
+            </div>
+            <div class="loading-hint" id="load-decke">⏳ Analyse läuft…</div>
+            <button class="btn-calc" id="btn-decke" onclick="calcDecke()">Berechnen</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel-result" id="res-decke">
+        <div class="result-view">
+          <div class="result-header">
+            <div class="result-title">Auswertung – Deckenanschluss</div>
+            <div class="result-actions">
+              <button class="btn-back"  onclick="backToInput('decke')">← Zurück</button>
+              <button class="btn-print" onclick="window.print()">Drucken / PDF</button>
+            </div>
+          </div>
+          <div id="res-decke-content"></div>
+        </div>
+        <div class="footer">Taupunktberechnung nach Magnus-Formel · Bewertung ersetzt keine sachverständige Begutachtung.</div>
+      </div>
+    </div>
+
+    <!-- TAB 6: RAUMECKE -->
     <div id="panel-raumecke" class="panel">
       <div class="panel-input" id="in-raumecke">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="8" width="64" height="64" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <line x1="8"  y1="26" x2="72" y2="26" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="8"  y1="44" x2="72" y2="44" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="8"  y1="62" x2="72" y2="62" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="26" y1="8"  x2="26" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="44" y1="8"  x2="44" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="62" y1="8"  x2="62" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-              </svg>
-              <div class="img-placeholder-label">Raumecke · 4×4 Matrix</div>
-            </div>
-            <div class="img-caption">Ecke, Wand und Decke – drei Punkte je Fläche als Referenz</div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Raumecke.jpg" alt="Raumecke">
+            <div class="img-caption">Schema der Messung</div>
           </div>
           <div class="panel-form">
             <div>
               <div class="form-title">Raumecke</div>
-              <div class="form-desc">Messen Sie: (1) Jeweils drei Punkte der Wand dicht an der Ecke. (2) Jeweils einen Punkt der Decke oberhalb der Wandpunkte. (3) Jeweils drei Punkte in der Mitte beider Wände als Referenz.</div>
+              <div class="form-desc">Messen Sie: (1) Jeweils drei Punkte der Wand dicht an der Ecke. (2) Jeweils einen Punkt der Decke oberhalb der Wandpunkte. (3) Jeweils drei Punkte in der Mitte entweder einer oder beider Wände als Referenz.</div>
             </div>
             <div style="overflow-x:auto">
               <table class="matrix-table" id="raumecke-table">
@@ -564,7 +588,7 @@ body {
               </svg>
               <div class="img-placeholder-label">Fenster · Messpunkte</div>
             </div>
-            <div class="img-caption">Drei Punkte je Seite der Laibung – oben, seitlich, unten</div>
+            <div class="img-caption">Schema der Messung</div>
           </div>
           <div class="panel-form">
             <div>
@@ -619,27 +643,13 @@ body {
       <div class="panel-input" id="in-flaeche">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="8" width="64" height="64" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <circle cx="22" cy="22" r="3" fill="#8899bb"/>
-                <circle cx="40" cy="22" r="3" fill="#8899bb"/>
-                <circle cx="58" cy="22" r="3" fill="#8899bb"/>
-                <circle cx="22" cy="40" r="3" fill="#8899bb"/>
-                <circle cx="40" cy="40" r="3" fill="#8899bb"/>
-                <circle cx="58" cy="40" r="3" fill="#8899bb"/>
-                <circle cx="22" cy="58" r="3" fill="#8899bb"/>
-                <circle cx="40" cy="58" r="3" fill="#8899bb"/>
-                <circle cx="58" cy="58" r="3" fill="#8899bb"/>
-              </svg>
-              <div class="img-placeholder-label">Fläche · 5×5 Raster</div>
-            </div>
-            <div class="img-caption">5 Punkte horizontal und vertikal – systematisches Raster</div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Wand-Flaeche.jpg" alt="Flächencheck">
+            <div class="img-caption">Schema der Messung</div>
           </div>
           <div class="panel-form">
             <div>
               <div class="form-title">Flächencheck</div>
-              <div class="form-desc">Messen Sie jeweils 5 Punkte horizontal und vertikal auf der zu messenden Wand oder sonstigen Fläche.</div>
+              <div class="form-desc">Messen Sie jeweils 5 Punkte horizontal und vertikal auf der zu messenden Wand oder sonstigen Fläche. Sie können, bei Bedarf, auch weniger Punkte messen. Tragen Sie die Messwerte aber immer zusammenhängend ein.</div>
             </div>
             <div class="flaeche-grid-wrap">
               <div class="flaeche-grid" id="flaeche-grid"></div>
@@ -856,12 +866,13 @@ function buildEckeRaute(tiles, eckenTyp) {
     if (!p) return `<div class="raute-result-empty"></div>`;
     return `<div class="raute-result-tile" style="background:${cellColor(p.temp)}"><div class="raute-result-label">${label}</div>${fmt(p.temp)} °C</div>`;
   }
+  const empty = `<div class="raute-result-empty"></div>`;
   return `
   <div style="font-size:13px;font-weight:700;color:#1a4a8a;margin-bottom:8px">${eckenTyp}</div>
   <div class="raute-result-wrap">
-    <div></div>${rTile(tiles.decke,'Decke')}<div></div>
-    ${rTile(tiles.wand1,'Wand 1')}<div></div>${rTile(tiles.wand2,'Wand 2')}
-    <div></div>${rTile(tiles.boden,'Boden')}<div></div>
+    ${empty}${rTile(tiles.decke,'Decke')}${empty}
+    ${rTile(tiles.wand1,'Wand 1')}${empty}${rTile(tiles.wand2,'Wand 2')}
+    ${empty}${rTile(tiles.boden,'Boden')}${empty}
   </div>`;
 }
 
@@ -937,6 +948,7 @@ async function calcRaumecke() {
     if (!isNaN(v)) punkte.push({ name: `${rowLabels[Math.floor(i/4)]}_${colLabels[i%4]}`, temp: v });
   });
   if (punkte.length === 0) { alert('Mindestens einen Wert eingeben.'); return; }
+  const konfidenz = punkte.length < 16 ? `<div class="konfidenz-note">⚠ Wenn Sie weniger Punkte nehmen als möglich, vermindert das die Zuverlässigkeit der Auswertung.</div>` : '';
   setLoading('raumecke', true);
   try {
     const data     = await callSchimmelAPI(r.tr, r.rh, punkte);
@@ -954,6 +966,7 @@ async function calcRaumecke() {
       h += '</tr>';
     }
     h += '</tbody></table></div>';
+    h += konfidenz;
     h += buildResultCard(kritisch.analyse, kritisch.temp);
     document.getElementById('res-raumecke-content').innerHTML = h;
     showResult('raumecke');
@@ -1027,6 +1040,39 @@ async function calcFlaeche() {
     document.getElementById('res-flaeche-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
     showResult('flaeche');
   } finally { setLoading('flaeche', false); }
+}
+
+async function calcDecke() {
+  const r = getRoomVals();
+  if (!r.valid) { alert('Raumdaten eingeben.'); return; }
+  const deckeIds = ['da-d1','da-d2','da-d3','da-d4','da-d5','da-d6'];
+  const wandIds  = ['da-w1','da-w2','da-w3','da-w4','da-w5','da-w6'];
+  const deckeVals = deckeIds.map(id => parseFloat(document.getElementById(id).value));
+  const wandVals  = wandIds.map(id  => parseFloat(document.getElementById(id).value));
+  const punkte = [];
+  deckeVals.forEach((v,i) => { if (!isNaN(v)) punkte.push({ name: `Decke${i+1}`, temp: v }); });
+  wandVals.forEach((v,i)  => { if (!isNaN(v)) punkte.push({ name: `Wand${i+1}`,  temp: v }); });
+  if (punkte.length === 0) { alert('Mindestens einen Messpunkt eingeben.'); return; }
+  const total = deckeVals.filter(v => !isNaN(v)).length + wandVals.filter(v => !isNaN(v)).length;
+  const konfidenz = total < 12 ? `<div class="konfidenz-note">⚠ Wenn Sie weniger Punkte nehmen als möglich, vermindert das die Zuverlässigkeit der Auswertung.</div>` : '';
+  setLoading('decke', true);
+  try {
+    const data    = await callSchimmelAPI(r.tr, r.rh, punkte);
+    const kritisch = findKritisch(data.punkte);
+    function dTile(v) {
+      return !isNaN(v)
+        ? `<div class="kachel-cell" style="background:${cellColor(v)};flex:1">${fmt(v)}</div>`
+        : `<div class="kachel-cell empty" style="flex:1">—</div>`;
+    }
+    const deckeRow = `<div style="margin-bottom:6px"><div style="font-size:11px;font-weight:800;color:#1a4a8a;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px">Decke</div><div style="display:flex;gap:4px">${deckeVals.map(v=>dTile(v)).join('')}</div></div>`;
+    const wandRow  = `<div style="margin-bottom:16px"><div style="font-size:11px;font-weight:800;color:#1a4a8a;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px">Wand</div><div style="display:flex;gap:4px">${wandVals.map(v=>dTile(v)).join('')}</div></div>`;
+    document.getElementById('res-decke-content').innerHTML =
+      konfidenz + deckeRow + wandRow + buildResultCard(kritisch.analyse, kritisch.temp);
+    showResult('decke');
+  } catch(e) {
+    document.getElementById('res-decke-content').innerHTML = `<div class="api-error">⚠ Verbindungsfehler: ${e.message}</div>`;
+    showResult('decke');
+  } finally { setLoading('decke', false); }
 }
 
 // ===== FLÄCHEN-GRID BAUEN =====
