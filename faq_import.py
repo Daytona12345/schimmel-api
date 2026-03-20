@@ -52,7 +52,7 @@ faq_data = {
     "status": "publish",
     "acf": {
         "faq_id": "faq_999",
-        "faq_zielgruppe": "test",
+        "faq_zielgruppe": "K",
         "faq_question": "Funktioniert der Import jetzt?",
         "faq_answer": "Ja – jetzt läuft alles über JWT 🚀",
         "faq_snippet": "Test erfolgreich"
