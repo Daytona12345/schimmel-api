@@ -7,11 +7,11 @@ Parent-Seiten: K=1392, P=1394
 
 Render Environment Variables:
   WP_URL      = https://test.thermo-check.de
-  WP_USER     = wordpress-benutzername oder email
-  WP_APP_PASS = passwort
+  WP_USER     = wordpress-benutzername
+  WP_APP_PASS = application-password
 
 Verwendung:
-  python lp_import.py              # alle JSONs im /lp_content Ordner
+  python lp_import.py              # alle JSONs im /faq_content Ordner
   python lp_import.py datei.json   # einzelne Datei
   python lp_import.py --dry-run    # test ohne request
 """
@@ -21,8 +21,8 @@ import os
 import sys
 import argparse
 import requests
+from requests.auth import HTTPBasicAuth
 from pathlib import Path
-from base64 import b64encode
 
 # ============================================================
 # KONFIGURATION
@@ -32,7 +32,6 @@ WP_URL      = os.getenv("WP_URL",      "https://test.thermo-check.de")
 WP_USER     = os.getenv("WP_USER",     "")
 WP_APP_PASS = os.getenv("WP_APP_PASS", "")
 
-# Parent-Seiten IDs
 PARENT_K = 1392  # schimmel-wohnung-test
 PARENT_P = 1394  # schimmel-risiko-rechner
 
@@ -42,18 +41,13 @@ CONTENT_DIR = Path(__file__).parent / "faq_content"
 # AUTH
 # ============================================================
 
-def get_auth_header():
-    credentials = f"{WP_USER}:{WP_APP_PASS}"
-    token = b64encode(credentials.encode()).decode("utf-8")
-    return {
-        "Authorization": f"Basic {token}",
-        "Content-Type": "application/json"
-    }
+def auth():
+    return HTTPBasicAuth(WP_USER, WP_APP_PASS)
 
 def test_connection():
     url = f"{WP_URL}/wp-json/wp/v2/users/me"
     try:
-        r = requests.get(url, headers=get_auth_header(), timeout=10)
+        r = requests.get(url, auth=auth(), timeout=10)
         if r.status_code == 200:
             data = r.json()
             print(f"✓ Verbunden als: {data.get('name', 'Unbekannt')}")
@@ -71,10 +65,9 @@ def test_connection():
 # ============================================================
 
 def get_category_ids(names):
-    """Holt Kategorie-IDs aus WordPress anhand der Namen."""
     url = f"{WP_URL}/wp-json/wp/v2/categories"
     try:
-        r = requests.get(url, headers=get_auth_header(),
+        r = requests.get(url, auth=auth(),
                         params={"per_page": 100}, timeout=10)
         if r.status_code == 200:
             all_cats = r.json()
@@ -98,7 +91,7 @@ def get_category_ids(names):
 def get_existing_page(slug):
     url = f"{WP_URL}/wp-json/wp/v2/pages"
     try:
-        r = requests.get(url, headers=get_auth_header(),
+        r = requests.get(url, auth=auth(),
                         params={"slug": slug, "status": "any"}, timeout=10)
         if r.status_code == 200:
             pages = r.json()
@@ -109,10 +102,10 @@ def get_existing_page(slug):
     return None
 
 def import_page(data, dry_run=False):
-    title    = data.get("title", "")
-    slug     = data.get("slug", "")
+    title      = data.get("title", "")
+    slug       = data.get("slug", "")
     zielgruppe = data.get("zielgruppe", "K")
-    parent   = PARENT_K if zielgruppe == "K" else PARENT_P
+    parent     = PARENT_K if zielgruppe == "K" else PARENT_P
 
     print(f"\n→ {title[:60]}")
     print(f"  Slug: /{slug}/  |  Zielgruppe: {zielgruppe}  |  Parent: {parent}")
@@ -121,17 +114,16 @@ def import_page(data, dry_run=False):
         print("  [DRY RUN] Würde importiert — kein echter Request")
         return True
 
-    # Kategorien auflösen
     cat_names = data.get("categories", [])
     cat_ids   = get_category_ids(cat_names) if cat_names else []
 
     payload = {
-        "title":   title,
-        "slug":    slug,
-        "status":  data.get("status", "draft"),
-        "parent":  parent,
-        "excerpt": data.get("excerpt", ""),
-        "content": data.get("content", ""),
+        "title":      title,
+        "slug":       slug,
+        "status":     data.get("status", "draft"),
+        "parent":     parent,
+        "excerpt":    data.get("excerpt", ""),
+        "content":    data.get("content", ""),
         "categories": cat_ids,
         "meta": {
             "rank_math_title":         data.get("meta", {}).get("rank_math_title", ""),
@@ -146,13 +138,11 @@ def import_page(data, dry_run=False):
     try:
         if existing_id:
             url = f"{WP_URL}/wp-json/wp/v2/pages/{existing_id}"
-            r = requests.post(url, headers=get_auth_header(),
-                            json=payload, timeout=30)
+            r = requests.post(url, auth=auth(), json=payload, timeout=30)
             action = "Aktualisiert"
         else:
             url = f"{WP_URL}/wp-json/wp/v2/pages"
-            r = requests.post(url, headers=get_auth_header(),
-                            json=payload, timeout=30)
+            r = requests.post(url, auth=auth(), json=payload, timeout=30)
             action = "Angelegt"
 
         if r.status_code in [200, 201]:
@@ -186,7 +176,7 @@ def main():
 
     if not args.dry_run:
         if not WP_USER or not WP_APP_PASS:
-            print("✗ WP_USER und WP_APP_PASS fehlen in Environment Variables.")
+            print("✗ WP_USER und WP_APP_PASS fehlen.")
             sys.exit(1)
         if not test_connection():
             sys.exit(1)
