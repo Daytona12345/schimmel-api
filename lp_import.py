@@ -36,7 +36,7 @@ WP_APP_PASS = os.getenv("WP_APP_PASS", "")
 PARENT_K = 1392  # schimmel-wohnung-test
 PARENT_P = 1394  # schimmel-risiko-rechner
 
-CONTENT_DIR = Path(__file__).parent / "lp_content"
+CONTENT_DIR = Path(__file__).parent / "faq_content"
 
 # ============================================================
 # AUTH
