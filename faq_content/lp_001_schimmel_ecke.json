@@ -1,0 +1,15 @@
+{
+  "title": "Warum entsteht Schimmel immer in den Ecken und nicht in der Wandmitte?",
+  "slug": "schimmel-ecke-ursache",
+  "status": "draft",
+  "zielgruppe": "K",
+  "categories": ["Konsumer", "schimmel-entstehung"],
+  "excerpt": "Schimmel entsteht in Raumecken, weil dort zwei Außenwände — und häufig der Deckenanschluss — zusammentreffen. Dadurch fließt überproportional viel Wärme nach außen ab, die Ecke ist bauphysikalisch immer kälter als die Wandmitte. Steigt die relative Oberflächenfeuchte (surfRH) über 80 %, wachsen Schimmelsporen — lange bevor die Wand sich feucht anfühlt. Das ist ein bauphysikalisches Phänomen, kein Nutzerfehler.",
+  "content": "<p>In Raumecken treffen zwei Außenwände aufeinander — häufig kommt der Deckenanschluss als dritte Kältebrücke hinzu. Dadurch fließt an dieser Stelle überproportional viel Wärme nach außen ab, während die beheizbare Innenoberfläche kleiner ist als bei einer freien Wandfläche. Das Ergebnis: Die Ecke ist bauphysikalisch immer kälter als die Wandmitte.</p><p>Steigt die relative Oberflächenfeuchte (surfRH) an dieser Stelle über die kritische Schwelle von 80 %, herrschen ideale Wachstumsbedingungen für Schimmelsporen — noch bevor die Wand sich feucht anfühlt oder sichtbares Kondensat entsteht. Die Ursache liegt in der Baukonstruktion, nicht im Lüftungsverhalten.</p><p>Wer die Ecke mit dem Infrarot-Thermometer misst und die Werte in Thermo-Check eingibt, erhält eine bauphysikalisch begründete Einschätzung, ob das Schimmelrisiko auf die Konstruktion zurückzuführen ist.</p>",
+  "meta": {
+    "rank_math_title": "Schimmel in der Ecke — Ursachen & Lösung | thermo-check.de",
+    "rank_math_description": "Warum entsteht Schimmel immer in den Ecken? Die Ursache liegt in der Baukonstruktion, nicht im Lüftungsverhalten. Thermo-Check zeigt das Risiko in Minuten.",
+    "rank_math_focus_keyword": "schimmel ecke ursache",
+    "faq_schema": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Warum entsteht Schimmel immer in den Ecken und nicht in der Wandmitte?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Schimmel entsteht in Raumecken, weil dort zwei Außenwände zusammentreffen. Die Ecke ist bauphysikalisch immer kälter als die Wandmitte. Steigt die surfRH über 80 %, wachsen Schimmelsporen — lange bevor die Wand sich feucht anfühlt. Das ist ein bauphysikalisches Phänomen, kein Nutzerfehler.\"}}]}</script>"
+  }
+}
