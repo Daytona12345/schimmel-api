@@ -1,0 +1,16 @@
+{
+  "title": "Ab welcher Temperatur wird eine Wand kritisch?",
+  "slug": "schimmel-wohnung-wandtemperatur-kritisch",
+  "status": "draft",
+  "zielgruppe": "K",
+  "categories": ["Konsumer", "schimmel-messen"],
+  "excerpt": "Eine Wand gilt als kritisch, wenn ihre Oberflächentemperatur unter 16 °C liegt — dann überschreitet die relative Oberflächenfeuchte (surfRH) bei normalen Raumkonditionen die kritische Schwelle von 80 %. Zwischen 16 und 18 °C ist die Wand auffällig, ab 18 °C gilt sie als bauphysikalisch unauffällig. Diese Ampelgrenzen sind absolute Richtwerte — das tatsächliche Risiko berechnet die surfRH aus allen drei Messgrößen.",
+  "content": "<p>Als Orientierung gilt: Unter 16 °C Wandoberflächentemperatur liegt bei typischen Raumkonditionen (20–22 °C, 50–60 % Luftfeuchtigkeit) die relative Oberflächenfeuchte (surfRH) regelmäßig über der kritischen Schwelle von 80 %. Zwischen 16 °C und 18 °C gilt die Wand als auffällig — das Risiko hängt stark von der Raumluftfeuchtigkeit ab. Ab 18 °C ist die Wand unter normalen Bedingungen bauphysikalisch unauffällig.</p><p>Diese Grenzwerte sind absolute Richtwerte und ermöglichen eine schnelle Ersteinschätzung im Feld. Das tatsächliche Schimmelrisiko berechnet die surfRH — sie berücksichtigt alle drei Eingangsgrößen gleichzeitig und liefert den präziseren Wert.</p><p>Thermo-Check verwendet ein 9-stufiges Ampelsystem mit 16 °C und 18 °C als Hauptschwellen und berechnet zusätzlich die surfRH — weil eine Temperaturangabe allein noch keine vollständige Risikoaussage ermöglicht. <a href=\"/schimmel-test/\">Jetzt Wandtemperatur prüfen →</a></p>",
+  "meta": {
+    "rank_math_title": "Ab welcher Wandtemperatur wird Schimmel kritisch? | thermo-check.de",
+    "rank_math_description": "Unter 16 °C Wandtemperatur ist Schimmelrisiko kritisch, 16–18 °C auffällig, ab 18 °C unauffällig. Wie die surfRH das genaue Risiko berechnet.",
+    "rank_math_focus_keyword": "wandtemperatur schimmel kritisch",
+    "faq_schema": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Ab welcher Temperatur wird eine Wand kritisch?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Eine Wand gilt als kritisch, wenn ihre Oberflächentemperatur unter 16 °C liegt. Zwischen 16 und 18 °C ist sie auffällig, ab 18 °C bauphysikalisch unauffällig. Diese Ampelgrenzen sind absolute Richtwerte — das tatsächliche Risiko berechnet die surfRH.\"}}]}</script>"
+  },
+  "parent": 1392
+}

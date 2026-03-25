@@ -1,0 +1,16 @@
+{
+  "title": "Warum reicht der Taupunkt als Schimmelindikator nicht aus?",
+  "slug": "schimmel-risiko-rechner/taupunkt-nicht-ausreichend",
+  "status": "draft",
+  "zielgruppe": "P",
+  "categories": ["Profi", "schimmel-messen"],
+  "excerpt": "Der Taupunkt reicht als Schimmelindikator nicht aus, weil Schimmel bereits wächst, bevor Kondensation einsetzt. Ab einer relativen Oberflächenfeuchte (surfRH) von 80 % — der kritischen Schwelle nach ISO 13788 — herrschen ideale Wachstumsbedingungen für Schimmelsporen. Der Taupunkt wird erst bei 100 % surfRH erreicht. Wer nur den Taupunkt kennt, übersieht das eigentliche Risiko.",
+  "content": "<p>Der Taupunkt ist die Temperatur, bei der Wasserdampf zu kondensieren beginnt — also der Punkt, an dem sichtbares Wasser an der Wand entsteht. Er markiert die 100-%-Grenze der Luftsättigung an der Oberfläche.</p><p>Schimmelwachstum beginnt jedoch deutlich früher: ab 80 % relativer Oberflächenfeuchte (surfRH) — der kritischen Schwelle, die in ISO 13788 als Schimmelrisikoschwelle definiert ist. Die surfRH beschreibt in Prozent, wie nahe eine Wandoberfläche dem Kondensationspunkt bereits ist. Eine surfRH von 75 % bedeutet: Die Wand ist zu 75 % des Weges zur Kondensation — Schimmelsporen finden hier bereits gute Wachstumsbedingungen.</p><p>Der entscheidende Unterschied: Der Taupunkt ist eine Schwelle für sichtbares Wasser. Die surfRH ist ein Frühwarnsystem für Schimmel — präziser, früher, und alle drei Eingangsgrößen (Raumtemperatur, Luftfeuchtigkeit, Wandtemperatur) gleichzeitig berücksichtigend.</p><p>Thermo-Check berechnet die surfRH aus den drei Messwerten und zeigt sie als zentralen Risikowert — zusätzlich zum Taupunkt und Taupunktabstand. Damit wird sichtbar, wo Schimmelgefahr besteht, noch bevor die Wand feucht wirkt. <a href=\"/schimmel-test/\">Jetzt Schimmelrisiko messen →</a></p>",
+  "meta": {
+    "rank_math_title": "Taupunkt reicht nicht aus — Schimmelindikator surfRH | thermo-check.de",
+    "rank_math_description": "Warum der Taupunkt als Schimmelindikator nicht ausreicht — und warum die relative Oberflächenfeuchte (surfRH) nach ISO 13788 der präzisere Wert ist.",
+    "rank_math_focus_keyword": "taupunkt schimmel indikator",
+    "faq_schema": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Warum reicht der Taupunkt als Schimmelindikator nicht aus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Der Taupunkt reicht als Schimmelindikator nicht aus, weil Schimmel bereits wächst, bevor Kondensation einsetzt. Ab einer relativen Oberflächenfeuchte (surfRH) von 80 % herrschen ideale Wachstumsbedingungen für Schimmelsporen. Der Taupunkt wird erst bei 100 % surfRH erreicht.\"}}]}</script>"
+  },
+  "parent": 1394
+}

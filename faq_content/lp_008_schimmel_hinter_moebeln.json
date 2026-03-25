@@ -1,0 +1,16 @@
+{
+  "title": "Kann Schimmel auch hinter Möbeln entstehen, ohne dass man es sieht?",
+  "slug": "schimmelbefall-hinter-moebeln",
+  "status": "draft",
+  "zielgruppe": "K",
+  "categories": ["Konsumer", "schimmel-schwachstellen"],
+  "excerpt": "Ja — Schimmel hinter Möbeln entsteht, weil große Einrichtungsgegenstände direkt an Außenwänden die Luftzirkulation unterbrechen. Die Wand kühlt aus, die relative Oberflächenfeuchte (surfRH) steigt unbemerkt über die kritische Schwelle von 80 %. Das Ergebnis: Schimmelwachstum über Monate oder Jahre, unsichtbar hinter der Oberfläche. Ein Mindestabstand von 5–10 cm zur Außenwand verhindert diesen Effekt.",
+  "content": "<p>Ja, und das ist häufiger als vermutet. Wenn große Möbelstücke direkt an einer Außenwand stehen, unterbrechen sie die Luftzirkulation. Die Luft hinter dem Schrank oder Regal bleibt stagnierend — die Wand kühlt aus, die relative Oberflächenfeuchte (surfRH) steigt. Überschreitet die surfRH die kritische Schwelle von 80 %, wachsen Schimmelsporen, lange bevor sie sichtbar werden.</p><p>Schimmel hinter Möbeln fällt oft erst durch Geruch oder Verfärbungen auf — dann ist er meist schon großflächig. Ein Mindestabstand von 5–10 cm zwischen Möbeln und Außenwand ermöglicht die notwendige Luftzirkulation.</p><p>Wer den Verdacht hat, kann mit dem Infrarot-Thermometer die Wandtemperatur hinter dem Möbelstück messen — notfalls seitlich angenähert — und den Wert in Thermo-Check eingeben. So lässt sich das Risiko einschätzen, ohne das Möbelstück sofort verrücken zu müssen. <a href=\"/schimmel-test/\">Jetzt Schimmelrisiko prüfen →</a></p>",
+  "meta": {
+    "rank_math_title": "Schimmel hinter Möbeln — unsichtbar aber real | thermo-check.de",
+    "rank_math_description": "Schimmel hinter Schränken und Regalen entsteht unbemerkt durch fehlende Luftzirkulation. Mindestabstand 5–10 cm zur Außenwand. So prüfen Sie das Risiko.",
+    "rank_math_focus_keyword": "schimmel hinter möbeln",
+    "faq_schema": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Kann Schimmel auch hinter Möbeln entstehen, ohne dass man es sieht?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja — Schimmel hinter Möbeln entsteht, weil große Einrichtungsgegenstände an Außenwänden die Luftzirkulation unterbrechen. Ein Mindestabstand von 5–10 cm zur Außenwand verhindert diesen Effekt.\"}}]}</script>"
+  },
+  "parent": 1392
+}
