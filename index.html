@@ -307,15 +307,14 @@ body {
   body { background: #fff !important; padding: 0; }
   .tab-nav, .result-actions, .anleitung, .neue-messung-btn, .top-bar, .btn-calc, .btn-back, .btn-print { display: none !important; }
   .card { box-shadow: none; border-radius: 0; }
-  .panel { display: block !important; }
+  .panel { display: none !important; }
+  .panel.active { display: block !important; }
   .panel-input { display: none !important; }
   .panel-result { display: block !important; visibility: visible !important; position: static !important; }
-  .result-grid { grid-template-columns: 1fr 1fr; }
   .befund-section { page-break-inside: avoid; }
   .result-box, .risk-box { border: 1px solid #cccccc !important; }
   .header { background: #1a4a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .footer { display: block !important; }
 }
 </style>
 </head>
