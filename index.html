@@ -252,6 +252,7 @@ body {
 
 /* ---- KONFIDENZ HINWEIS ---- */
 .konfidenz-note { background: #fffbe6; border: 1px solid #f0d060; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #7a6000; margin-bottom: 14px; }
+.sickerschaden-note { background: #f0f4fb; border: 1px solid #1a4a8a; border-radius: 6px; padding: 12px 16px; font-size: 14px; font-weight: 500; color: #1a4a8a; margin-top: 16px; line-height: 1.5; }
 
 
 /* BEFUND SECTION */
@@ -304,9 +305,17 @@ body {
 /* PRINT */
 @media print {
   body { background: #fff !important; padding: 0; }
-  .tab-nav, .result-actions, .anleitung, .neue-messung-btn { display: none !important; }
+  .tab-nav, .result-actions, .anleitung, .neue-messung-btn, .top-bar, .btn-calc, .btn-back, .btn-print { display: none !important; }
   .card { box-shadow: none; border-radius: 0; }
+  .panel { display: block !important; }
+  .panel-input { display: none !important; }
+  .panel-result { display: block !important; visibility: visible !important; position: static !important; }
+  .result-grid { grid-template-columns: 1fr 1fr; }
+  .befund-section { page-break-inside: avoid; }
+  .result-box, .risk-box { border: 1px solid #cccccc !important; }
+  .header { background: #1a4a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .footer { display: block !important; }
 }
 </style>
 </head>
@@ -806,6 +815,8 @@ function buildResultCard(analyse, tSurf) {
     ${befund3 ? `<div class="befund-block"><div class="befund-label">Empfehlung</div><div class="befund-text">${befund3}</div></div>` : ''}
   </div>` : '';
 
+  const sickerschadenHint = surfRH < 70 ? `<div class="sickerschaden-note">⚠ Die Messwerte ergeben ein geringes oder kein Kondensationsrisiko an dieser Stelle. Wenn die Wand trotzdem feucht oder nass ist, sollte ein Sickerschaden oder Leitungswasserschaden geprüft werden.</div>` : '';
+
   return `
   <div class="result-grid">
     <div class="result-box">
@@ -836,7 +847,8 @@ function buildResultCard(analyse, tSurf) {
       <div class="risk-bar-labels"><span>unbedenklich</span><span>erhöht</span><span>hoch</span><span>akut</span></div>
     </div>
   </div>
-  ${befundBlock}`;
+  ${befundBlock}
+  ${sickerschadenHint}`;
 }
 
 // ===== KRITISCHSTEN PUNKT FINDEN (höchste surfRH) =====
