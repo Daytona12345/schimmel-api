@@ -798,6 +798,9 @@ async function callSchimmelAPI(t_raum, rF_raum, punkte) {
 // RESULT CARD – baut aus API-Antwort die Darstellung
 // ================================================
 function buildResultCard(analyse, tSurf) {
+  const r = getRoomVals();
+  const tr = r.tr;
+  const rh = r.rh;
   const { taupunkt, taupunkt_abstand, surfRH, delta_t, scenario_id, ursache, befund1, befund2, befund3 } = analyse;
   const chipColor  = colorFromScenario(scenario_id);
   const riskLabel  = surfRH >= 90 ? 'AKUT' : surfRH >= 80 ? 'HOCH' : surfRH >= 70 ? 'ERHÖHT' : 'UNBEDENKLICH';
