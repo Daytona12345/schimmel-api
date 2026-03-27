@@ -18,6 +18,7 @@ Verwendung:
 
 import json
 import os
+import re
 import sys
 import argparse
 import requests
@@ -59,6 +60,23 @@ def test_connection():
     except Exception as e:
         print(f"✗ Verbindungsfehler: {e}")
         return False
+
+# ============================================================
+# CONTENT BEREINIGUNG
+# ============================================================
+
+def strip_cta_links(content):
+    """
+    Entfernt Inline-CTA-Links aus dem Content.
+    CTA wird ausschliesslich ueber den Template-Button gesteuert.
+    Betrifft Links zu /schimmel-test/, /thermo-check-kaufen/ und aehnliche.
+    """
+    # Alle <a href="...">...</a> Links entfernen
+    cleaned = re.sub(r'<a\s+href=["\'][^"\']*["\'][^>]*>.*?</a>', '', content, flags=re.IGNORECASE)
+    # Doppelte Leerzeichen oder Leerzeichen vor </p> bereinigen
+    cleaned = re.sub(r'\s{2,}', ' ', cleaned)
+    cleaned = re.sub(r'\s+</p>', '</p>', cleaned)
+    return cleaned.strip()
 
 # ============================================================
 # KATEGORIEN
@@ -105,7 +123,13 @@ def import_page(data, dry_run=False):
     title      = data.get("title", "")
     slug       = data.get("slug", "")
     zielgruppe = data.get("zielgruppe", "K")
-    parent     = PARENT_K if zielgruppe == "K" else PARENT_P
+
+    # Parent immer aus Zielgruppe ableiten — JSON-Feld wird ignoriert
+    # um inkonsistente oder fehlende parent-Felder abzufangen
+    if zielgruppe == "P":
+        parent = PARENT_P
+    else:
+        parent = PARENT_K
 
     print(f"\n→ {title[:60]}")
     print(f"  Slug: /{slug}/  |  Zielgruppe: {zielgruppe}  |  Parent: {parent}")
@@ -117,13 +141,19 @@ def import_page(data, dry_run=False):
     cat_names = data.get("categories", [])
     cat_ids   = get_category_ids(cat_names) if cat_names else []
 
+    # Content bereinigen — CTA-Links raus
+    raw_content = data.get("content", "")
+    clean_content = strip_cta_links(raw_content)
+    if raw_content != clean_content:
+        print("  ✓ CTA-Links aus Content entfernt")
+
     payload = {
         "title":      title,
         "slug":       slug,
         "status":     data.get("status", "draft"),
         "parent":     parent,
         "excerpt":    data.get("excerpt", ""),
-        "content":    data.get("content", ""),
+        "content":    clean_content,
         "categories": cat_ids,
         "meta": {
             "rank_math_title":         data.get("meta", {}).get("rank_math_title", ""),
