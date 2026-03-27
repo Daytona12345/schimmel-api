@@ -1,0 +1,19 @@
+{
+  "title": "Was ist der Unterschied zwischen Schimmel und Feuchtigkeit?",
+  "slug": "schimmel-wohnung-feuchtigkeit-unterschied",
+  "status": "draft",
+  "zielgruppe": "K",
+  "categories": [
+    "Konsumer",
+    "schimmel-entstehung"
+  ],
+  "excerpt": "Feuchtigkeit ist Wasser in der Wand — Schimmel ist die biologische Folge dauerhafter Feuchtigkeit. Nicht jede Feuchtigkeit verursacht Schimmel: Kondensationsfeuchtigkeit entsteht durch Temperaturunterschiede zwischen Luft und Wand, andere Feuchtigkeitsschäden durch Leckagen, Schlagregen oder aufsteigende Bodenfeuchte. Die Ursachen unterscheiden sich grundlegend — und damit auch die Lösung.",
+  "content": "<p>Feuchtigkeit ist Wasser in oder an der Wand — unabhängig von der Ursache. Sie kann durch Kondensation entstehen (Wasserdampf aus der Raumluft schlägt sich an kalten Oberflächen nieder), durch Schlagregen, aufsteigende Bodenfeuchte oder Leckagen.</p><p>Schimmel ist ein Lebewesen, das Feuchtigkeit als Wachstumsgrundlage braucht. Er entsteht nicht sofort, sondern erst wenn die Feuchtigkeitsbelastung über längere Zeit ausreichend hoch ist. Feuchtigkeit ist die Ursache, Schimmel die Folge — aber nicht jede Feuchtigkeit führt zwingend zu Schimmel, und nicht jeder Schimmel ist auf Kondensation zurückzuführen.</p><p>Für die Diagnose ist diese Unterscheidung entscheidend: Kondensationsfeuchtigkeit lässt sich mit einem Infrarot-Thermometer erfassen. Leckagen oder aufsteigende Nässe erfordern andere Untersuchungsmethoden.</p><p>Thermo-Check erkennt Schimmelrisiko durch Kondensationsneigung — berechnet aus Wandtemperatur, Raumtemperatur und Luftfeuchtigkeit. Feuchtigkeitsschäden durch Leckagen oder bauliche Defekte liegen außerhalb dieses Messbereichs.</p>",
+  "parent": 1392,
+  "meta": {
+    "rank_math_title": "Schimmel und Feuchtigkeit — was ist der Unterschied? | thermo-check.de",
+    "rank_math_description": "Feuchtigkeit ist Wasser in der Wand, Schimmel die biologische Folge. Warum die Ursache entscheidend ist — und was Thermo-Check erkennen kann.",
+    "rank_math_focus_keyword": "schimmel feuchtigkeit unterschied",
+    "faq_schema": "<script type=\"application/ld+json\">{\"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [{\"@type\": \"Question\", \"name\": \"Was ist der Unterschied zwischen Schimmel und Feuchtigkeit?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Feuchtigkeit ist Wasser in der Wand — Schimmel ist die biologische Folge dauerhafter Feuchtigkeit. Nicht jede Feuchtigkeit verursacht Schimmel: Kondensationsfeuchtigkeit entsteht durch Temperaturunterschiede zwischen Luft und Wand, andere Feuchtigkeitsschäden durch Leckagen, Schlagregen oder aufsteigende Bodenfeuchte. Die Ursachen unterscheiden sich grundlegend — und damit auch die Lösung.\"}}]}</script>"
+  }
+}
