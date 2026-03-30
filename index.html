@@ -47,7 +47,7 @@
   --gelb-stark:   #FFD300;
   --gelb-mittel:  #FFE066;
   --gelb-sanft:   #FFE896;
-  --gruen-sanft:  #A8E6C8;
+  --gruen-sanft:  #B5E88A;
   --gruen-mittel: #48C78E;
   --gruen-stark:  #00A859;
 
@@ -129,6 +129,7 @@ body {
 .img-placeholder svg { width: 52px; height: 52px; opacity: 0.5; }
 .img-placeholder-label { font-family: var(--font-display); font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #556; }
 .img-caption { font-size: 15px; font-weight: 600; color: #333; text-align: center; line-height: 1.5; max-width: 260px; }
+.panel-img img { width: 100%; max-width: 280px; border-radius: var(--radius); display: block; }
 
 .panel-form { padding: 32px 28px; display: flex; flex-direction: column; gap: 22px; }
 .form-title { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
@@ -252,7 +253,6 @@ body {
 
 /* ---- KONFIDENZ HINWEIS ---- */
 .konfidenz-note { background: #fffbe6; border: 1px solid #f0d060; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #7a6000; margin-bottom: 14px; }
-.sickerschaden-note { background: #f0f4fb; border: 1px solid #1a4a8a; border-radius: 6px; padding: 12px 16px; font-size: 14px; font-weight: 500; color: #1a4a8a; margin-top: 16px; line-height: 1.5; }
 
 
 /* BEFUND SECTION */
@@ -305,15 +305,8 @@ body {
 /* PRINT */
 @media print {
   body { background: #fff !important; padding: 0; }
-  .tab-nav, .result-actions, .anleitung, .neue-messung-btn, .top-bar, .btn-calc, .btn-back, .btn-print { display: none !important; }
+  .tab-nav, .result-actions, .anleitung, .neue-messung-btn { display: none !important; }
   .card { box-shadow: none; border-radius: 0; }
-  .panel { display: none !important; }
-  .panel.active { display: block !important; }
-  .panel-input { display: none !important; }
-  .panel-result { display: block !important; visibility: visible !important; position: static !important; }
-  .befund-section { page-break-inside: avoid; }
-  .result-box, .risk-box { border: 1px solid #cccccc !important; }
-  .header { background: #1a4a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
@@ -369,19 +362,7 @@ body {
       <div class="panel-input" id="in-p-ecke">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="10" width="60" height="60" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <line x1="10" y1="10" x2="40" y2="40" stroke="#8899bb" stroke-width="1.5" stroke-dasharray="4 3"/>
-                <circle cx="22" cy="22" r="5" fill="#8899bb"/>
-                <circle cx="40" cy="40" r="5" fill="#8899bb"/>
-                <circle cx="58" cy="58" r="5" fill="#8899bb"/>
-                <text x="29" y="26" font-size="10" fill="#8899bb" font-weight="bold">1</text>
-                <text x="47" y="44" font-size="10" fill="#8899bb" font-weight="bold">2</text>
-                <text x="62" y="56" font-size="10" fill="#8899bb" font-weight="bold">3</text>
-              </svg>
-              <div class="img-placeholder-label">Ecke · 3 Messpunkte</div>
-            </div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Ecke-oben.jpg" alt="Punktcheck Ecke">
             <div class="img-caption">Einen Punkt je Fläche der Ecke messen</div>
           </div>
           <div class="panel-form">
@@ -438,18 +419,7 @@ body {
       <div class="panel-input" id="in-p-flaeche">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="10" width="60" height="60" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <circle cx="24" cy="24" r="5" fill="#8899bb"/>
-                <circle cx="56" cy="38" r="5" fill="#8899bb"/>
-                <circle cx="30" cy="58" r="5" fill="#8899bb"/>
-                <text x="31" y="28" font-size="10" fill="#8899bb" font-weight="bold">1</text>
-                <text x="63" y="42" font-size="10" fill="#8899bb" font-weight="bold">2</text>
-                <text x="37" y="62" font-size="10" fill="#8899bb" font-weight="bold">3</text>
-              </svg>
-              <div class="img-placeholder-label">Fläche · 3 Messpunkte</div>
-            </div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Punkt_Flaeche.jpg" alt="Punktcheck Fläche">
             <div class="img-caption">Drei zusammenliegende Punkte im Messbereich</div>
           </div>
           <div class="panel-form">
@@ -487,18 +457,7 @@ body {
       <div class="panel-input" id="in-raumecke">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="8" width="64" height="64" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <line x1="8"  y1="26" x2="72" y2="26" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="8"  y1="44" x2="72" y2="44" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="8"  y1="62" x2="72" y2="62" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="26" y1="8"  x2="26" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="44" y1="8"  x2="44" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-                <line x1="62" y1="8"  x2="62" y2="72" stroke="#8899bb" stroke-width="1" stroke-dasharray="3 2"/>
-              </svg>
-              <div class="img-placeholder-label">Raumecke · 4×4 Matrix</div>
-            </div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Raumecke.jpg" alt="Raumecke">
             <div class="img-caption">Ecke, Wand und Decke – drei Punkte je Fläche als Referenz</div>
           </div>
           <div class="panel-form">
@@ -625,21 +584,7 @@ body {
       <div class="panel-input" id="in-flaeche">
         <div class="panel-body">
           <div class="panel-img">
-            <div class="img-placeholder">
-              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="8" width="64" height="64" rx="3" stroke="#8899bb" stroke-width="2" fill="none"/>
-                <circle cx="22" cy="22" r="3" fill="#8899bb"/>
-                <circle cx="40" cy="22" r="3" fill="#8899bb"/>
-                <circle cx="58" cy="22" r="3" fill="#8899bb"/>
-                <circle cx="22" cy="40" r="3" fill="#8899bb"/>
-                <circle cx="40" cy="40" r="3" fill="#8899bb"/>
-                <circle cx="58" cy="40" r="3" fill="#8899bb"/>
-                <circle cx="22" cy="58" r="3" fill="#8899bb"/>
-                <circle cx="40" cy="58" r="3" fill="#8899bb"/>
-                <circle cx="58" cy="58" r="3" fill="#8899bb"/>
-              </svg>
-              <div class="img-placeholder-label">Fläche · 5×5 Raster</div>
-            </div>
+            <img src="https://thermo-check.de/wp-content/uploads/2026/03/Wand-Flaeche.jpg" alt="Flächencheck">
             <div class="img-caption">5 Punkte horizontal und vertikal – systematisches Raster</div>
           </div>
           <div class="panel-form">
@@ -702,7 +647,7 @@ function colorFromScenario(scenario_id) {
   if (s.includes('a2'))                                 return '#FFD300';
   if (s.includes('fall b') || s.includes('nutzung'))   return '#FFE066';
   if (s.includes('fall c') || s.includes('misch'))     return '#FFE896';
-  if (s.includes('d1') || s.includes('d2') || s.includes('d3')) return '#A8E6C8';
+  if (s.includes('d1') || s.includes('d2') || s.includes('d3')) return '#B5E88A';
   if (s.includes('alles ok') || s.includes('unauff'))  return '#00A859';
   return '#cccccc';
 }
@@ -797,9 +742,6 @@ async function callSchimmelAPI(t_raum, rF_raum, punkte) {
 // RESULT CARD – baut aus API-Antwort die Darstellung
 // ================================================
 function buildResultCard(analyse, tSurf) {
-  const r = getRoomVals();
-  const tr = r.tr;
-  const rh = r.rh;
   const { taupunkt, taupunkt_abstand, surfRH, delta_t, scenario_id, ursache, befund1, befund2, befund3 } = analyse;
   const chipColor  = colorFromScenario(scenario_id);
   const riskLabel  = surfRH >= 90 ? 'AKUT' : surfRH >= 80 ? 'HOCH' : surfRH >= 70 ? 'ERHÖHT' : 'UNBEDENKLICH';
@@ -813,11 +755,9 @@ function buildResultCard(analyse, tSurf) {
     <div class="befund-header">Ursachenbewertung</div>
     ${ursache ? `<div class="befund-ursache">${ursache}</div>` : ''}
     ${befund1 ? `<div class="befund-block"><div class="befund-label">Wandtemperatur</div><div class="befund-text">${befund1}</div></div>` : ''}
-    ${befund2 ? `<div class="befund-block"><div class="befund-label">Nutzung</div><div class="befund-text">${befund2}</div></div>` : ''}
+    ${befund2 ? `<div class="befund-block"><div class="befund-label">Nutzung des Raumes</div><div class="befund-text">${befund2}</div></div>` : ''}
     ${befund3 ? `<div class="befund-block"><div class="befund-label">Empfehlung</div><div class="befund-text">${befund3}</div></div>` : ''}
   </div>` : '';
-
-  const sickerschadenHint = surfRH < 70 ? `<div class="sickerschaden-note">⚠ Die Messwerte ergeben ein geringes oder kein Kondensationsrisiko an dieser Stelle. Wenn die Wand trotzdem feucht oder nass ist, sollte ein Sickerschaden oder Leitungswasserschaden geprüft werden.</div>` : '';
 
   return `
   <div class="result-grid">
@@ -827,7 +767,7 @@ function buildResultCard(analyse, tSurf) {
         <div class="ampel-chip-big" style="background:${chipColor}">${fmt(tSurf)}</div>
         <div class="ampel-info">
           <div class="val">${fmt(tSurf)} °C – Auffälligste Temperatur</div>
-          <div class="sub">Raum: ${fmt(tr)} °C / ${rh} % rF</div>
+          <div class="sub">${scenarioLabel(scenario_id)}</div>
         </div>
       </div>
       <div class="stat-row">
@@ -849,8 +789,7 @@ function buildResultCard(analyse, tSurf) {
       <div class="risk-bar-labels"><span>unbedenklich</span><span>erhöht</span><span>hoch</span><span>akut</span></div>
     </div>
   </div>
-  ${befundBlock}
-  ${sickerschadenHint}`;
+  ${befundBlock}`;
 }
 
 // ===== KRITISCHSTEN PUNKT FINDEN (höchste surfRH) =====
