@@ -1,0 +1,24 @@
+{
+  "title": "Warum entscheidet die Wandtemperatur – nicht die Raumluft – ob Schimmel entsteht?",
+  "slug": "wandtemperatur-entscheidend-schimmel",
+  "status": "draft",
+  "zielgruppe": "K",
+  "ebene": "2",
+  "excerpt": "Ob Schimmel entsteht, entscheidet nicht die Luftfeuchtigkeit im Raum, sondern die Temperatur der Wandoberfläche. Je kälter die Wand, desto höher die relative Feuchte direkt an der Oberfläche – und ab 80 % beginnt Schimmelwachstum, lange bevor etwas sichtbar wird.",
+  "content": "<p>Die meisten Menschen messen die Luftfeuchtigkeit in der Raummitte – und wundern sich, wenn trotz normaler Werte Schimmel entsteht. Der Grund: Die Raumluftfeuchte ist nicht das Problem. Entscheidend ist die relative Feuchte direkt an der Wandoberfläche.</p><p>Diese sogenannte Oberflächenfeuchte (surfRH) verhält sich anders als die Raumluftfeuchte. Je kälter eine Wand ist, desto stärker steigt die Feuchte an ihrer Oberfläche – selbst wenn die Raumluft unauffällig wirkt. Das ist keine Meinung, das ist Physik: Kalte Oberflächen ziehen Feuchtigkeit aus der Luft an.</p><p>Schimmelwachstum beginnt typischerweise ab 80 % surfRH. Das ist ein Wert, der an einer kalten Außenwand oder in einer Ecke schnell erreicht wird – während dein Hygrometer in der Raummitte entspannte 55 % anzeigt. Laut einer repräsentativen Studie (sbz-online.de, Januar 2025) liegt in rund 80 % aller Schimmelfälle eine bauliche Ursache vor – meist genau das: Stellen in der Wohnung, die dauerhaft zu kalt bleiben.</p><h2>Was bedeutet das konkret?</h2><p>Eine Wand mit 12 °C Oberflächentemperatur bei 20 °C Raumtemperatur und 50 % Luftfeuchtigkeit hat eine surfRH von weit über 80 %. Schimmel wächst dort – auch wenn sich die Wand trocken anfühlt und das Hygrometer grünes Licht gibt.</p><p>Thermo-Check berechnet genau diesen Wert: aus Raumtemperatur, Luftfeuchtigkeit und Wandtemperatur. Das Ergebnis zeigt, ob eine Oberfläche aktuell im kritischen Bereich liegt – und ob die Ursache im Verhalten oder in der Bausubstanz liegt.</p>",
+  "faq": [
+    {
+      "question": "Ab welcher Wandtemperatur wird Schimmel wahrscheinlich?",
+      "answer": "Es gibt keinen festen Grenzwert für die Wandtemperatur allein – entscheidend ist das Zusammenspiel aus Wandtemperatur, Raumtemperatur und Luftfeuchtigkeit. Die resultierende Oberflächenfeuchte (surfRH) ist der relevante Wert. Ab 80 % surfRH beginnt Schimmelwachstum. Bei typischen Wohnbedingungen (20 °C, 50–60 % Luftfeuchtigkeit) wird dieser Wert bei Wandtemperaturen unter 12–14 °C kritisch."
+    },
+    {
+      "question": "Warum hilft Lüften nicht, wenn die Wand zu kalt ist?",
+      "answer": "Lüften senkt die Luftfeuchtigkeit in der Raumluft – das ist gut. Aber es ändert nichts an der Temperatur der Wandoberfläche. Wenn die Wand strukturell kalt bleibt, bleibt auch die surfRH dort hoch. Lüften löst das Problem nicht, solange die Ursache baulich ist."
+    }
+  ],
+  "meta": {
+    "rank_math_title": "Wandtemperatur und Schimmel – warum sie der entscheidende Faktor ist",
+    "rank_math_description": "Nicht die Raumluft, sondern die Wandtemperatur entscheidet über Schimmel. Ab 80 % Oberflächenfeuchte wächst Schimmel – oft unsichtbar.",
+    "rank_math_focus_keyword": "wandtemperatur schimmel entstehung"
+  }
+}
