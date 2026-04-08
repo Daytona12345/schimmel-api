@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-thermo-check.de — Landing Page Import Script v2.2
+thermo-check.de — Landing Page Import Script v2.3
 ==================================================
 Dual Import: Legt jede Landing Page automatisch in zwei Welten an.
   1. Extern (17xx) — SEO-Master, rankende Seite, mit Header/Footer
@@ -200,7 +200,22 @@ def strip_cta_links(content):
 # KATEGORIEN
 # ============================================================
 
-def get_category_ids(names):
+def get_category_ids_for_page(zielgruppe, ebene):
+    """
+    Kategorien werden automatisch aus zielgruppe + ebene abgeleitet.
+    JSON braucht kein categories-Feld mehr.
+    K/P + Ebene 1/2 werden in WordPress-Kategorie-IDs übersetzt.
+    """
+    names = []
+    if zielgruppe == "P":
+        names.append("P")
+    else:
+        names.append("K")
+    if ebene == "1":
+        names.append("Ebene 1")
+    elif ebene == "2":
+        names.append("Ebene 2")
+    return get_category_ids(names)
     url = f"{WP_URL}/wp-json/wp/v2/categories"
     try:
         r = requests.get(url, auth=auth(), params={"per_page": 100}, timeout=10)
@@ -289,8 +304,7 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
             log(" ", f"Canonical: {canonical_url}")
         return "dry-run"
 
-    cat_names = data.get("categories", [])
-    cat_ids   = get_category_ids(cat_names) if cat_names else []
+    cat_ids = get_category_ids_for_page(data.get("zielgruppe", "K"), ebene)
 
     meta = {
         "rank_math_title":         data.get("meta", {}).get("rank_math_title", ""),
@@ -317,7 +331,7 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
         "excerpt":    data.get("excerpt", ""),
         "content":    clean_content,
         "categories": cat_ids,
-        "meta":       meta,
+        "meta_input": meta,
     }
 
     existing_id = get_existing_page(slug, parent_id)
