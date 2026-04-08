@@ -200,6 +200,25 @@ def strip_cta_links(content):
 # KATEGORIEN
 # ============================================================
 
+def get_category_ids(names):
+    url = f"{WP_URL}/wp-json/wp/v2/categories"
+    try:
+        r = requests.get(url, auth=auth(), params={"per_page": 100}, timeout=10)
+        if r.status_code == 200:
+            all_cats = r.json()
+            id_map = {c["name"].lower(): c["id"] for c in all_cats}
+            ids = []
+            for name in names:
+                cat_id = id_map.get(name.lower())
+                if cat_id:
+                    ids.append(cat_id)
+                else:
+                    log("⚠", f"Kategorie nicht gefunden: {name}")
+            return ids
+    except Exception as e:
+        log("✗", f"Kategorie-Lookup Fehler: {e}")
+    return []
+
 def get_category_ids_for_page(zielgruppe, ebene):
     """
     Kategorien werden automatisch aus zielgruppe + ebene abgeleitet.
