@@ -221,28 +221,48 @@ def get_category_ids_for_page(zielgruppe, ebene):
 def find_page_by_tc_id(tc_id, tc_variant):
     """
     Sucht eine Seite anhand von tc_id + tc_variant.
-    Kein Slug-Lookup, kein Parent-Lookup.
-    Gibt die WordPress-Seiten-ID zurück oder None.
+    Lädt alle Seiten paginiert und filtert in Python nach ACF-Feldern.
+    Kein Slug-Lookup, kein Parent-Lookup — deterministisch.
     """
     url = f"{WP_URL}/wp-json/wp/v2/pages"
-    try:
-        # Alle Seiten mit dieser tc_id laden (ACF-Feld)
-        r = requests.get(url, auth=auth(), params={
-            "meta_key":   "tc_id",
-            "meta_value": tc_id,
-            "per_page":   100,
-            "status":     "any"
-        }, timeout=15)
+    page_num = 1
+    per_page = 100
 
-        if r.status_code == 200:
-            pages = r.json()
-            for page in pages:
-                # tc_variant aus ACF-Feldern prüfen
-                acf = page.get("acf", {})
-                if acf.get("tc_variant") == tc_variant:
-                    return page["id"]
+    try:
+        while True:
+            r = requests.get(url, auth=auth(), params={
+                "per_page": per_page,
+                "page":     page_num,
+                "status":   "any",
+                "_fields":  "id,acf"
+            }, timeout=15)
+
+            if r.status_code == 200:
+                pages = r.json()
+                if not pages:
+                    break
+
+                for page in pages:
+                    acf = page.get("acf", {})
+                    if acf.get("tc_id") == tc_id and acf.get("tc_variant") == tc_variant:
+                        return page["id"]
+
+                # Weitere Seiten?
+                total_pages = int(r.headers.get("X-WP-TotalPages", 1))
+                if page_num >= total_pages:
+                    break
+                page_num += 1
+
+            elif r.status_code == 400:
+                # Keine weiteren Seiten
+                break
+            else:
+                log("✗", f"Lookup HTTP {r.status_code}")
+                break
+
     except Exception as e:
         log("✗", f"Lookup-Fehler: {e}")
+
     return None
 
 # ============================================================
