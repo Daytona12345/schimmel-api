@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-thermo-check.de — Landing Page Import Script v2.4
+thermo-check.de — Landing Page Import Script v2.5
 ==================================================
 Dual Import: Legt jede Landing Page automatisch in zwei Welten an.
   1. Extern (17xx) — SEO-Master, rankende Seite, mit Header/Footer
@@ -22,27 +22,18 @@ Verwendung:
   python lp_import.py datei.json   # einzelne Datei
   python lp_import.py --dry-run    # test ohne echte Requests
 
-JSON-Struktur Ebene 1 (vier Felder):
-  title            — Seitentitel / Frage (Standard-WP-Feld)
-  vertiefung       — Druckaufbau, warum das wirklich ein Problem ist
-  mangeldefinition — Die offene Frage, die den Impuls erzeugt
-  cta_text         — Individualisierter Satz, der den Button einleitet
+Idempotenz-Logik (v2.5):
+  Eindeutige Identifikation über tc_id + tc_variant.
+  tc_id kommt aus dem JSON (z.B. "K1_0001").
+  tc_variant wird vom Script gesetzt: "extern" oder "intern".
+  Kein Slug-Lookup, kein Parent-Lookup — deterministisch und duplikatfrei.
 
-  Das Script schreibt vertiefung/mangeldefinition/cta_text als separate
-  Custom Meta Fields (für Saims Template-Zonen) UND baut daraus das
-  WordPress content-Feld als HTML-Fallback zusammen.
-
-JSON-Struktur Ebene 2 (klassisch):
-  content          — HTML, Antwort + Thermo-Check Integration
-
-v2.2 Änderungen:
-  - Vier-Felder-Struktur für Ebene-1-Seiten (title/vertiefung/mangeldefinition/cta_text)
-  - Script baut content automatisch aus den drei Textfeldern zusammen
-  - vertiefung, mangeldefinition, cta_text werden als Custom Meta Fields geschrieben
-  - Ebene-2-Seiten: content-Feld wie bisher unterstützt
-  - REQUIRED_FIELDS je nach ebene unterschiedlich validiert
-  - parent-Feld im JSON wird ignoriert (Warnung ausgegeben)
-  - Parent wird ausschließlich vom Script aus zielgruppe gesetzt
+v2.5 Änderungen:
+  - Idempotenz über tc_id + tc_variant statt slug + parent
+  - tc_id ist Pflichtfeld im JSON
+  - tc_variant wird automatisch gesetzt, steht nicht im JSON
+  - Beide Felder werden als ACF-Felder geschrieben
+  - Slug wird nicht mehr zur Identifikation verwendet
 """
 
 import json
@@ -77,8 +68,8 @@ BASE_URL_P_EXTERN = "https://thermo-check.de/schimmel-profi"
 CONTENT_DIR = Path(__file__).parent / "faq_content"
 
 # Pflichtfelder — je nach ebene unterschiedlich
-REQUIRED_FIELDS_EBENE1 = ["title", "slug", "zielgruppe", "vertiefung", "mangeldefinition", "cta_text", "excerpt"]
-REQUIRED_FIELDS_EBENE2 = ["title", "slug", "zielgruppe", "content", "excerpt"]
+REQUIRED_FIELDS_EBENE1 = ["title", "slug", "zielgruppe", "tc_id", "vertiefung", "mangeldefinition", "cta_text", "excerpt"]
+REQUIRED_FIELDS_EBENE2 = ["title", "slug", "zielgruppe", "tc_id", "content", "excerpt"]
 
 # ============================================================
 # LOGGING
@@ -132,9 +123,8 @@ def validate_json(data, filepath):
         if not data.get(field):
             errors.append(f"Pflichtfeld fehlt oder leer: '{field}'")
 
-    # Warnung wenn parent-Feld im JSON steht — wird ignoriert, Script setzt Parent selbst
     if "parent" in data:
-        log("⚠", f"JSON enthält 'parent'-Feld — wird ignoriert. Parent wird ausschließlich aus zielgruppe + Importmodus gesetzt.")
+        log("⚠", "JSON enthält 'parent'-Feld — wird ignoriert.")
 
     zielgruppe = data.get("zielgruppe", "")
     if zielgruppe not in ["K", "P"]:
@@ -142,13 +132,18 @@ def validate_json(data, filepath):
 
     slug = data.get("slug", "")
     if "/" in slug or "\\" in slug:
-        errors.append(f"slug enthält Slash — nur den reinen Slug angeben, keinen Pfad: '{slug}'")
+        errors.append(f"slug enthält Slash: '{slug}'")
     if re.search(r"[^a-z0-9\-äöü]", slug):
         errors.append(f"slug enthält unerlaubte Zeichen: '{slug}'")
 
     status = data.get("status", "draft")
     if status not in ["draft", "publish"]:
         errors.append(f"status muss 'draft' oder 'publish' sein, nicht '{status}'")
+
+    # tc_id Format prüfen: nur Kleinbuchstaben, Ziffern, Unterstriche, Bindestriche
+    tc_id = data.get("tc_id", "")
+    if tc_id and re.search(r"[^a-z0-9A-Z_\-]", tc_id):
+        errors.append(f"tc_id enthält unerlaubte Zeichen: '{tc_id}'")
 
     if errors:
         log("✗", f"Validierungsfehler in {filepath.name}:")
@@ -163,11 +158,6 @@ def validate_json(data, filepath):
 # ============================================================
 
 def build_faq_schema(faq_items):
-    """
-    Generiert JSON-LD FAQ-Schema aus strukturierten Daten.
-    Das JSON enthält nur question/answer — das Script baut das Schema.
-    Einmal hier ändern = alle Seiten aktualisiert beim nächsten Import.
-    """
     schema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
@@ -190,7 +180,6 @@ def build_faq_schema(faq_items):
 # ============================================================
 
 def strip_cta_links(content):
-    """Entfernt Inline-CTA-Links aus dem Content."""
     cleaned = re.sub(r'<a\s+href=["\'][^"\']*["\'][^>]*>.*?</a>', '', content, flags=re.IGNORECASE)
     cleaned = re.sub(r'\s{2,}', ' ', cleaned)
     cleaned = re.sub(r'\s+</p>', '</p>', cleaned)
@@ -220,67 +209,47 @@ def get_category_ids(names):
     return []
 
 def get_category_ids_for_page(zielgruppe, ebene):
-    """
-    Kategorien werden automatisch aus zielgruppe + ebene abgeleitet.
-    JSON braucht kein categories-Feld mehr.
-    K/P + Ebene 1/2 werden in WordPress-Kategorie-IDs übersetzt.
-    """
     names = []
-    if zielgruppe == "P":
-        names.append("P")
-    else:
-        names.append("K")
-    if ebene == "1":
-        names.append("Ebene 1")
-    elif ebene == "2":
-        names.append("Ebene 2")
+    names.append("P" if zielgruppe == "P" else "K")
+    names.append("Ebene 1" if ebene == "1" else "Ebene 2")
     return get_category_ids(names)
-    url = f"{WP_URL}/wp-json/wp/v2/categories"
-    try:
-        r = requests.get(url, auth=auth(), params={"per_page": 100}, timeout=10)
-        if r.status_code == 200:
-            all_cats = r.json()
-            id_map = {c["name"].lower(): c["id"] for c in all_cats}
-            ids = []
-            for name in names:
-                cat_id = id_map.get(name.lower())
-                if cat_id:
-                    ids.append(cat_id)
-                else:
-                    log("⚠", f"Kategorie nicht gefunden: {name}")
-            return ids
-    except Exception as e:
-        log("✗", f"Kategorie-Lookup Fehler: {e}")
-    return []
 
 # ============================================================
-# SEITEN-LOOKUP (Idempotenz)
+# IDEMPOTENZ-LOOKUP über tc_id + tc_variant
 # ============================================================
 
-def get_existing_page(slug, parent_id):
+def find_page_by_tc_id(tc_id, tc_variant):
     """
-    Sucht nach einer Seite mit diesem Slug unter einem bestimmten Parent.
-    Verhindert Duplikate wenn intern und extern denselben Slug haben.
+    Sucht eine Seite anhand von tc_id + tc_variant.
+    Kein Slug-Lookup, kein Parent-Lookup.
+    Gibt die WordPress-Seiten-ID zurück oder None.
     """
     url = f"{WP_URL}/wp-json/wp/v2/pages"
     try:
-        r = requests.get(url, auth=auth(),
-                        params={"slug": slug, "status": "any", "per_page": 100}, timeout=10)
+        # Alle Seiten mit dieser tc_id laden (ACF-Feld)
+        r = requests.get(url, auth=auth(), params={
+            "meta_key":   "tc_id",
+            "meta_value": tc_id,
+            "per_page":   100,
+            "status":     "any"
+        }, timeout=15)
+
         if r.status_code == 200:
             pages = r.json()
             for page in pages:
-                if page.get("parent") == parent_id:
+                # tc_variant aus ACF-Feldern prüfen
+                acf = page.get("acf", {})
+                if acf.get("tc_variant") == tc_variant:
                     return page["id"]
-    except Exception:
-        pass
+    except Exception as e:
+        log("✗", f"Lookup-Fehler: {e}")
     return None
 
+# ============================================================
+# CONTENT AUFBAU EBENE 1
+# ============================================================
+
 def build_ebene1_content(data):
-    """
-    Baut das WordPress content-Feld aus den vier Ebene-1-Feldern zusammen.
-    Reihenfolge: vertiefung → mangeldefinition → cta_text
-    title ist Standard-WP-Feld, wird separat geschrieben.
-    """
     v = data.get("vertiefung", "").strip()
     m = data.get("mangeldefinition", "").strip()
     c = data.get("cta_text", "").strip()
@@ -291,54 +260,53 @@ def build_ebene1_content(data):
 # SEITE ANLEGEN / AKTUALISIEREN
 # ============================================================
 
-def push_page(data, parent_id, canonical_url=None, dry_run=False):
+def push_page(data, parent_id, tc_variant, canonical_url=None, dry_run=False):
     """
     Legt eine WordPress-Seite an oder aktualisiert sie.
-    Gemeinsamer Schlüssel intern↔extern: slug (eindeutig, unveränderlich).
+    Identifikation über tc_id + tc_variant — deterministisch, duplikatfrei.
     """
-    title  = data.get("title", "")
-    slug   = data.get("slug", "")
-    status = data.get("status", "draft")
-    ebene  = data.get("ebene", "2")
+    title   = data.get("title", "")
+    slug    = data.get("slug", "")
+    status  = data.get("status", "draft")
+    ebene   = data.get("ebene", "2")
+    tc_id   = data.get("tc_id", "")
 
-    # Content-Logik: Ebene 1 = aus V/M/C zusammenbauen, Ebene 2 = content-Feld direkt
+    # Content aufbauen
     if ebene == "1":
         raw_content = build_ebene1_content(data)
     else:
         raw_content = data.get("content", "")
 
     clean_content = strip_cta_links(raw_content)
-    if raw_content != clean_content:
-        log("✓", "CTA-Links aus Content entfernt")
 
-    # FAQ-Schema generieren
+    # FAQ-Schema
     faq_items  = data.get("faq", [])
     faq_schema = build_faq_schema(faq_items) if faq_items else ""
 
     if dry_run:
-        action = "Extern" if not canonical_url else "Intern"
-        log("→", f"[DRY RUN] {action} — {title[:60]}")
-        log(" ", f"Slug: {slug} | Parent: {parent_id}")
+        log("→", f"[DRY RUN] {tc_variant.upper()} — {title[:60]}")
+        log(" ", f"tc_id: {tc_id} | Slug: {slug} | Parent: {parent_id}")
         if canonical_url:
             log(" ", f"Canonical: {canonical_url}")
         return "dry-run"
 
     cat_ids = get_category_ids_for_page(data.get("zielgruppe", "K"), ebene)
 
-    # RankMath und Canonical via meta_input
+    # RankMath via meta_input
     meta = {
         "rank_math_title":         data.get("meta", {}).get("rank_math_title", ""),
         "rank_math_description":   data.get("meta", {}).get("rank_math_description", ""),
         "rank_math_focus_keyword": data.get("meta", {}).get("rank_math_focus_keyword", ""),
         "faq_schema":              faq_schema,
     }
-
-    # Canonical für interne Seite setzen
     if canonical_url:
         meta["rank_math_canonical_url"] = canonical_url
 
-    # ACF-Felder via acf-Key (REST API) — ACF versteht nur diesen Weg
-    acf_fields = {}
+    # ACF-Felder — tc_id und tc_variant immer, E1-Felder nur bei Ebene 1
+    acf_fields = {
+        "tc_id":      tc_id,
+        "tc_variant": tc_variant,
+    }
     if ebene == "1":
         acf_fields["tc_vertiefung"]       = data.get("vertiefung", "")
         acf_fields["tc_mangeldefinition"] = data.get("mangeldefinition", "")
@@ -353,13 +321,11 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
         "content":    clean_content,
         "categories": cat_ids,
         "meta_input": meta,
+        "acf":        acf_fields,
     }
 
-    # ACF-Felder nur wenn vorhanden
-    if acf_fields:
-        payload["acf"] = acf_fields
-
-    existing_id = get_existing_page(slug, parent_id)
+    # Lookup über tc_id + tc_variant
+    existing_id = find_page_by_tc_id(tc_id, tc_variant)
 
     try:
         if existing_id:
@@ -372,7 +338,7 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
             action = "Angelegt"
 
         if r.status_code in [200, 201]:
-            page = r.json()
+            page     = r.json()
             page_id  = page["id"]
             page_url = page.get("link", f"{WP_URL}/?page_id={page_id}")
             log("✓", f"{action}: ID {page_id} — {page_url}")
@@ -395,42 +361,43 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
 def dual_import(data, dry_run=False):
     """
     Dual Import — Reihenfolge ist zwingend:
-    1. Extern anlegen (17xx) → URL zurückbekommen
+    1. Extern anlegen (17xx) → externe URL zurückbekommen
     2. Intern anlegen (13xx) → Canonical auf externe URL setzen
-
-    Gemeinsamer Schlüssel: slug (eindeutig für beide Welten)
+    Identifikation: tc_id + tc_variant (extern/intern)
     """
     zielgruppe = data.get("zielgruppe", "K")
     slug       = data.get("slug", "")
+    tc_id      = data.get("tc_id", "")
     title      = data.get("title", "")[:60]
+    ebene      = data.get("ebene", "nicht gesetzt")
 
-    # Parent-IDs bestimmen
     if zielgruppe == "P":
-        parent_extern = PARENT_P_EXTERN
-        parent_intern = PARENT_P_INTERN
+        parent_extern  = PARENT_P_EXTERN
+        parent_intern  = PARENT_P_INTERN
         canonical_base = BASE_URL_P_EXTERN
     else:
-        parent_extern = PARENT_K_EXTERN
-        parent_intern = PARENT_K_INTERN
+        parent_extern  = PARENT_K_EXTERN
+        parent_intern  = PARENT_K_INTERN
         canonical_base = BASE_URL_K_EXTERN
 
     canonical_url = f"{canonical_base}/{slug}/"
 
-    ebene = data.get("ebene", "nicht gesetzt")
     log_section(f"{title}")
-    print(f"  Slug: {slug} | Zielgruppe: {zielgruppe} | Ebene: {ebene}")
+    print(f"  tc_id: {tc_id} | Slug: {slug} | Zielgruppe: {zielgruppe} | Ebene: {ebene}")
 
-    # Schritt 1 — Extern (Master)
-    print(f"\n  [1/2] Extern → Parent {parent_extern}")
-    extern_id = push_page(data, parent_extern, canonical_url=None, dry_run=dry_run)
+    # Schritt 1 — Extern
+    print(f"\n  [1/2] Extern → Parent {parent_extern} | tc_variant: extern")
+    extern_id = push_page(data, parent_extern, tc_variant="extern",
+                          canonical_url=None, dry_run=dry_run)
 
     if not extern_id and not dry_run:
-        log("✗", "Extern fehlgeschlagen — Intern wird übersprungen (kein Canonical möglich)")
+        log("✗", "Extern fehlgeschlagen — Intern wird übersprungen")
         return False
 
-    # Schritt 2 — Intern (Schatten mit Canonical)
-    print(f"\n  [2/2] Intern → Parent {parent_intern} | Canonical: {canonical_url}")
-    intern_id = push_page(data, parent_intern, canonical_url=canonical_url, dry_run=dry_run)
+    # Schritt 2 — Intern
+    print(f"\n  [2/2] Intern → Parent {parent_intern} | tc_variant: intern | Canonical: {canonical_url}")
+    intern_id = push_page(data, parent_intern, tc_variant="intern",
+                          canonical_url=canonical_url, dry_run=dry_run)
 
     if not intern_id and not dry_run:
         log("⚠", "Intern fehlgeschlagen — Extern wurde angelegt, Canonical fehlt noch")
@@ -443,13 +410,13 @@ def dual_import(data, dry_run=False):
 # ============================================================
 
 def main():
-    parser = argparse.ArgumentParser(description="thermo-check.de Landing Page Dual Import v2.0")
+    parser = argparse.ArgumentParser(description="thermo-check.de Landing Page Dual Import v2.5")
     parser.add_argument("files", nargs="*")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     print("=" * 50)
-    print("  thermo-check.de — Landing Page Dual Import v2.0")
+    print("  thermo-check.de — Landing Page Dual Import v2.5")
     print("=" * 50)
 
     if not args.dry_run:
