@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-thermo-check.de — Landing Page Import Script v2.3
+thermo-check.de — Landing Page Import Script v2.4
 ==================================================
 Dual Import: Legt jede Landing Page automatisch in zwei Welten an.
   1. Extern (17xx) — SEO-Master, rankende Seite, mit Header/Footer
@@ -325,6 +325,7 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
 
     cat_ids = get_category_ids_for_page(data.get("zielgruppe", "K"), ebene)
 
+    # RankMath und Canonical via meta_input
     meta = {
         "rank_math_title":         data.get("meta", {}).get("rank_math_title", ""),
         "rank_math_description":   data.get("meta", {}).get("rank_math_description", ""),
@@ -332,15 +333,16 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
         "faq_schema":              faq_schema,
     }
 
-    # Ebene-1-Felder als Custom Meta Fields — für Saims Template-Zonen
-    if ebene == "1":
-        meta["tc_vertiefung"]       = data.get("vertiefung", "")
-        meta["tc_mangeldefinition"] = data.get("mangeldefinition", "")
-        meta["tc_cta_text"]         = data.get("cta_text", "")
-
     # Canonical für interne Seite setzen
     if canonical_url:
         meta["rank_math_canonical_url"] = canonical_url
+
+    # ACF-Felder via acf-Key (REST API) — ACF versteht nur diesen Weg
+    acf_fields = {}
+    if ebene == "1":
+        acf_fields["tc_vertiefung"]       = data.get("vertiefung", "")
+        acf_fields["tc_mangeldefinition"] = data.get("mangeldefinition", "")
+        acf_fields["tc_cta_text"]         = data.get("cta_text", "")
 
     payload = {
         "title":      title,
@@ -352,6 +354,10 @@ def push_page(data, parent_id, canonical_url=None, dry_run=False):
         "categories": cat_ids,
         "meta_input": meta,
     }
+
+    # ACF-Felder nur wenn vorhanden
+    if acf_fields:
+        payload["acf"] = acf_fields
 
     existing_id = get_existing_page(slug, parent_id)
 
