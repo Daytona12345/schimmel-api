@@ -1,0 +1,18 @@
+{
+  "title": "In diesem Feld soll 'title' (WordPress-Post-Title) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_site_id": "demo_test_0001",
+  "tc_page_type": "level1",
+  "slug": "demo-test-seite",
+  "seo_title": "In diesem Feld soll 'seo_title' (RankMath rank_math_title) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "meta_description": "In diesem Feld soll 'meta_description' (RankMath rank_math_description) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_intro_question": "In diesem Feld soll 'tc_intro_question' (ACF, Leserfrage ganz oben) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_situation_user": "In diesem Feld soll 'tc_situation_user' (ACF, Teil A) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_issue_classification": "In diesem Feld soll 'tc_issue_classification' (ACF, Teil B) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_key_question": "In diesem Feld soll 'tc_key_question' (ACF, Schlüsselfrage/SF1) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_alternative": "In diesem Feld soll 'tc_alternative' (ACF, Ohne/Mit-Vergleich) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_cta": "In diesem Feld soll 'tc_cta' (ACF, Handlungsaufforderung) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_legal_advice": "In diesem Feld soll 'tc_legal_advice' (ACF, juristischer Hinweis) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "tc_excerpt": "In diesem Feld soll 'tc_excerpt' (ACF, zitierfähige Kurzantwort-Box) angezeigt werden. Wenn dies hier zu lesen ist, ist der Versuch erfolgreich gewesen.",
+  "categories": ["K-Konflikt", "Ebene 1"],
+  "status": "draft"
+}
