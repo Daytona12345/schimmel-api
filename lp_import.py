@@ -232,6 +232,11 @@ def find_page_by_site_id(site_id):
 
                 for page in pages:
                     acf = page.get("acf", {})
+                    if not isinstance(acf, dict):
+                        # ACF liefert bei leeren/fehlenden Werten teils ein
+                        # leeres Array [] statt eines Objekts {} - solche
+                        # Seiten koennen kein tc_site_id tragen, ueberspringen.
+                        continue
                     if acf.get("tc_site_id") == site_id:
                         return page["id"]
 
